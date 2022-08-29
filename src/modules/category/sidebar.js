@@ -2,22 +2,6 @@ import React from "react";
 import { Menu, InputNumber, Form, Button } from "antd";
 import { Link } from "gatsby";
 
-const getSlugFromTitle = (title) => {
-  let slug;
-  slug = title.toLowerCase();
-  slug = slug.replace(
-    /\`|\~|\!|\@|\#|\||\$|\%|\^|\&|\*|\(|\)|\+|\=|\,|\.|\/|\?|\>|\<|\'|\"|\:|\;|_/gi,
-    ""
-  );
-  slug = slug.replace(/ /gi, "-");
-  slug = slug.replace(/\-\-\-\-\-/gi, "-");
-  slug = slug.replace(/\-\-\-\-/gi, "-");
-  slug = slug.replace(/\-\-\-/gi, "-");
-  slug = slug.replace(/\-\-/gi, "-");
-  slug = slug.replace(/\@\-|\-\@|\@/gi, "");
-  return slug;
-};
-
 function SideBar({ categories }) {
   const sideBar = {
     label: "Categories",

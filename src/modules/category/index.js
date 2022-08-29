@@ -2,7 +2,7 @@ import { Link } from "gatsby";
 import React, { useMemo } from "react";
 import { Pagination, Select } from "antd";
 import SideBar from "./sidebar";
-import DefaultLoader from '../../components/PageLoading';
+import DefaultLoader from "../../components/PageLoading";
 import ProductList from "../product-list";
 const { Option } = Select;
 
@@ -47,7 +47,7 @@ function CategorySection(props) {
       <SideBar categories={allCategories} />
       <div className="page-content">
         <div className="subcategory-wrap">
-          {subCategory && subCategory.length && (
+          {subCategory && subCategory.length ? (
             <>
               <div className="sub-category-heading">
                 <h3>{subCategoryTitle}</h3>
@@ -85,11 +85,15 @@ function CategorySection(props) {
                 </ul>
               </div>
             </>
-          )}
+          ) : null}
         </div>
         <div className="product-listing-container">
           <div className="actionBar-main">
-            <Select value={sorting} style={{ width : 'content-fit'}} onChange={onChangeSorting}>
+            <Select
+              value={sorting}
+              style={{ width: "content-fit" }}
+              onChange={onChangeSorting}
+            >
               {filterOption &&
                 filterOption.map((item) => (
                   <Option value={item.value}>{item.label}</Option>
@@ -98,20 +102,24 @@ function CategorySection(props) {
           </div>
           <div>
             {loading ? (
-              <><DefaultLoader/></>
+              <>
+                <DefaultLoader />
+              </>
             ) : (
               <>
                 <ProductList productList={productList} />
-                <div className="pagination">
-                  <Pagination
-                    current={page}
-                    total={total}
-                    onChange={onPageChange}
-                    showTotal={(total, range) =>
-                      `${range[0]}-${range[1]} of ${total} items`
-                    }
-                  />
-                </div>
+                {total > 10  && productList.length? (
+                  <div className="pagination">
+                    <Pagination
+                      current={page}
+                      total={total}
+                      onChange={onPageChange}
+                      showTotal={(total, range) =>
+                        `${range[0]}-${range[1]} of ${total} items`
+                      }
+                    />
+                  </div>
+                ) : null}
               </>
             )}
           </div>

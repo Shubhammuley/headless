@@ -1,5 +1,5 @@
 import React, { Fragment, useEffect, useState } from "react";
-import { Link } from "gatsby";
+import { Link, navigate } from "gatsby";
 import useTopNavigation from "../hooks/use-top-navigation";
 import useBottomNavigation from "../hooks/use-bottom-navigation";
 import { Menu, message, Input } from "antd";
@@ -66,6 +66,8 @@ const RootElement = ({ children }) => {
   };
 
   const onSearch = (e) => {
+    onCloseSearch();
+    window.location.replace(`/search/?search_query=${encodeURIComponent(e.target.value)}`)
     console.log(e.target.value);
   };
 

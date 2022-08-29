@@ -3,33 +3,33 @@ import { Link, graphql } from "gatsby";
 import { Breadcrumb, Layout } from "antd";
 import CategorySection from "../modules/category";
 import RootElement from "../components/base-layout";
-import { getProductList } from '../service';
+import { getProductList } from "../service";
 const { Content } = Layout;
 
 const getSortObject = (value) => {
-  if(value === 'date'){
-    return { sort: 'date_last_imported', }
-  } else if (value === 'totalSold') {
-    return { sort: 'total_sold' };
-  } else if (value === 'aToZ') {
-    return { sort: 'name' };
-  } else if (value === 'zToA') {
-    return { sort: 'name', direction: 'desc' };
-  } else if (value === 'PriceAsc') {
-    return { sort: 'price' };
-  } else if (value === 'PriceDesc') {
-    return { sort: 'price' , direction: 'desc' };
+  if (value === "date") {
+    return { sort: "date_last_imported" };
+  } else if (value === "totalSold") {
+    return { sort: "total_sold" };
+  } else if (value === "aToZ") {
+    return { sort: "name" };
+  } else if (value === "zToA") {
+    return { sort: "name", direction: "desc" };
+  } else if (value === "PriceAsc") {
+    return { sort: "price" };
+  } else if (value === "PriceDesc") {
+    return { sort: "price", direction: "desc" };
   } else {
     return {};
   }
-}
+};
 
 function Categories(props) {
   const [loading, setLoding] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalProduct, setTotalProduct] = useState(0);
   const [productList, setProductList] = useState([]);
-  const [sorting, setSorting] = useState('normal');
+  const [sorting, setSorting] = useState("normal");
   const {
     data: { allBigCommerceCategories },
   } = props;
@@ -43,11 +43,11 @@ function Categories(props) {
       setTotalProduct(result.meta.pagination.total);
       setProductList(list);
       setLoding(false);
-    }catch (e) {
+    } catch (e) {
       setLoding(false);
       console.log(e);
     }
-  }
+  };
 
   const onChangePage = (page) => {
     setCurrentPage(page);
@@ -55,7 +55,7 @@ function Categories(props) {
 
   const onChangeSorting = (value) => {
     setSorting(value);
-  }
+  };
 
   useEffect(() => {
     getProductData(currentPage, sorting);
@@ -86,12 +86,12 @@ function Categories(props) {
           </Breadcrumb.Item>
         </Breadcrumb>
         <div className="site-layout-content">
-          <CategorySection 
+          <CategorySection
             allCategories={categories}
             pageTitle="Categories"
             subCategory={categories}
             productList={productList}
-            subCategoryTitle= "Subcategories"
+            subCategoryTitle="Subcategories"
             total={totalProduct}
             page={currentPage}
             loading={loading}
