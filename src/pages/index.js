@@ -8,6 +8,8 @@ import { Link } from "gatsby";
 import RootElement from "../components/base-layout";
 import useAllBlogPost from "../hooks/use-all-blog-post";
 import useAllHomePageSlider from "../hooks/use-all-homepage-slider";
+import useProductList from '../hooks/use-all-product-list';
+import ProductCard from '../modules/product-card';
 
 const contentStyle = {
   height: "100px",
@@ -27,6 +29,8 @@ const getBlogDescription = (description) => {
 const IndexPage = () => {
   const allBlogPost = useAllBlogPost();
   const allHomePageSlider = useAllHomePageSlider();
+  const allProductList = useProductList();
+  // console.log(allProductList)
   return (
     <RootElement>
       <Carousel autoplay>
@@ -42,8 +46,16 @@ const IndexPage = () => {
             </div>
           ))}
       </Carousel>
+      <div className="product-list">
+        <h3>Featured Products</h3>
+        <div className="product-scroll-list">
+          {allProductList && allProductList.length ? <>
+            {allProductList.map((item) => <ProductCard productDetails = {item}/>)}
+          </> : null}
+        </div>
+      </div>
       <div>
-        <h1>Lifestyle Blog</h1>
+        <h3>Lifestyle Blog</h3>
         {allBlogPost &&
           allBlogPost.length &&
           allBlogPost.map((item, index) => {

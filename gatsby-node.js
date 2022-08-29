@@ -84,11 +84,72 @@ exports.createPages = ({ graphql, actions }) => {
                 }
               }
             }
+            allBigCommerceCategories {
+              nodes {
+                id
+                name
+                description
+                default_product_sort
+                parent_id
+                page_title
+                search_keywords
+                sort_order
+                views
+                is_visible
+                layout_file
+                meta_description
+                meta_keywords
+                bigcommerce_id
+                custom_url {
+                  is_customized
+                  url
+                }
+                image_url
+              }
+            }
           }
         `).then((result) => {
           if (result.errors) {
             reject(result.errors);
           }
+
+          const categories = result.data.allBigCommerceCategories.nodes;
+
+          const category = [];
+          categories.map((item) => {
+            if (item && item.parent_id === 0) {
+              const subCategories = categories.filter((subCategory) => {
+                if (subCategory.parent_id === item.bigcommerce_id) {
+                  createPage({
+                    path: subCategory.custom_url.url,
+                    component: path.resolve(`src/templates/categories.js`),
+                    context: {
+                      categoryId: subCategory.bigcommerce_id,
+                      description: subCategory.description,
+                      category: subCategory,
+                      parentCategory: item,
+                      categories,
+                    },
+                  });
+                  return subCategory;
+                }
+              });
+              category.push({ ...item, subCategories });
+              createPage({
+                path: item.custom_url.url,
+                component: path.resolve(`src/templates/categories.js`),
+                context: {
+                  categoryId: item.bigcommerce_id,
+                  description: item.description,
+                  category: { ...item, subCategories },
+                  subCategories,
+                  categories
+                },
+              });
+            }
+          });
+
+          category.forEach;
           const products = result.data.allBigCommerceProducts.nodes;
 
           products.forEach(({ custom_url, id }) => {
@@ -312,7 +373,44 @@ exports.onCreateDevServer = ({ app }) => {
       })
       .catch(function(error) {
         console.log(error.response.data);
-        res.status(422)
+        res.status(422);
+      });
+    res.send(result);
+  });
+
+  app.get("/BC/productList", async function(req, res) {
+    const sort = req.query.sort || 'id';
+    const direction = req.query.direction || 'asc';
+    let url = `${storeUrl}/v3/catalog/products?include=images,variants,custom_fields,options,modifiers,videos&is_visible=true&direction=${direction}&sort=${sort}`;
+    if(req.query.category) {
+      url= url + `&categories:in=${req.query.category}`;
+    }
+    if(req.query.keyword) {
+      url= url + `&keyword=${req.query.keyword}`;
+    }
+    if(req.query.page) {
+      url = url+ `&page=${req.query.page}`;
+    }
+    const config = {
+      method: "get",
+      withCredentials: false,
+      mode: "no-cors",
+      url,
+      headers: {
+        "sec-ch-ua":
+          '"Chromium";v="104", " Not A;Brand";v="99", "Google Chrome";v="104"',
+        Referer: "http://localhost:8000/",
+        "X-Auth-Token": apiToken,
+        "Content-Type": "application/json",
+      },
+    };
+
+    const result = await axios(config)
+      .then(function(response) {
+        return response.data;
+      })
+      .catch(function(error) {
+        console.log(error);
       });
     res.send(result);
   });
@@ -325,4 +423,3 @@ exports.onCreateDevServer = ({ app }) => {
     )
   );
 };
-

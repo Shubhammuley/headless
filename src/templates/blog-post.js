@@ -21,7 +21,6 @@ const getFormatedDate = (date) => {
 function BlogPost({ pageContext, location }) {
   const { contentfulPage } = pageContext;
   const breadCrumbs = location?.pathname?.split("/");
-  console.log(breadCrumbs);
   const url = [];
 
   return (

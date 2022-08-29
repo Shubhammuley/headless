@@ -1,15 +1,17 @@
 import React, { Fragment, useEffect, useState } from "react";
 import { Link } from "gatsby";
-import axios from "axios";
 import useTopNavigation from "../hooks/use-top-navigation";
 import useBottomNavigation from "../hooks/use-bottom-navigation";
-import { Menu, message } from "antd";
+import { Menu, message, Input } from "antd";
 import "./base-component.css";
+import { getProductList } from "../service";
 import image from "../logo/logo.webp";
 import {
   MenuFoldOutlined,
   MenuUnfoldOutlined,
   DownOutlined,
+  SearchOutlined,
+  CloseOutlined,
 } from "@ant-design/icons";
 import { useCookies } from "react-cookie";
 
@@ -25,19 +27,23 @@ const openNotification = (type, messageText) => {
   }
 };
 const RootElement = ({ children }) => {
-  const [cookies, setCookie, removeCookie ] = useCookies(["SHOP_TOKEN"]);
+  const [cookies, setCookie, removeCookie] = useCookies(["SHOP_TOKEN"]);
 
+  const [showSearch, setShowSearch] = useState(false);
+  const [searchText, setSearchText] = useState(null);
   const [collapsed, setCollapsed] = useState(true);
   const [userDetails, setUserDetails] = useState(null);
+  const [productList, setProductList] = useState([]);
+  const [noProductFoundError, SetNotProductFoundError] = useState(false);
 
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      localStorage.setItem('myCat', 'Tom');
+    if (typeof window !== "undefined") {
+      localStorage.setItem("myCat", "Tom");
     }
-    const user = localStorage && localStorage.getItem('loggedUserBc');
-    if(user) {
+    const user = localStorage && localStorage.getItem("loggedUserBc");
+    if (user) {
       console.log(cookies);
-      console.log(user)
+      console.log(user);
       setUserDetails(JSON.parse(user));
     }
   }, [cookies, typeof window]);
@@ -48,10 +54,41 @@ const RootElement = ({ children }) => {
 
   const onLogout = () => {
     removeCookie();
-    localStorage.setItem('loggedUserBc', '');
+    localStorage.setItem("loggedUserBc", "");
     setUserDetails(null);
     openNotification("sucess", "Successfully logged out");
-  }
+  };
+
+  const onCloseSearch = () => {
+    setShowSearch(false);
+    SetNotProductFoundError(false);
+    setProductList([]);
+  };
+
+  const onSearch = (e) => {
+    console.log(e.target.value);
+  };
+
+  const searchOnChange = async (e) => {
+    setSearchText(e.target.value);
+    if (e.target.value && e.target.value.length >= 3) {
+      try {
+        const product = await getProductList({ keyword: e.target.value });
+        setProductList(product.data || []);
+        if (!product.data || !product.data.length) {
+          SetNotProductFoundError(true);
+        } else {
+          SetNotProductFoundError(false);
+        }
+      } catch (e) {
+        SetNotProductFoundError(true);
+        console.log(e);
+      }
+    } else {
+      SetNotProductFoundError(false);
+      setProductList([]);
+    }
+  };
   const sideBar = {
     label: "Quick Links",
     children: topNavigation.map((item, index) => {
@@ -93,31 +130,110 @@ const RootElement = ({ children }) => {
                   <img src={image} />
                 </Link>
               </li>
-              {topNavigation.map((item, index) => {
-                const { pageUrl, title, sublink } = item;
-                return (
-                  <li>
-                    <Link to={`/${pageUrl}`}>
-                      {title} {sublink && sublink.length && <DownOutlined />}
-                    </Link>
-                    {sublink && sublink.length ? (
-                      <ul>
-                        {sublink.map((link) => {
-                          return (
-                            <li>
-                              <Link to={`/${link.pageUrl}`}>{link.title}</Link>
-                            </li>
-                          );
-                        })}
-                      </ul>
-                    ) : null}
-                  </li>
-                );
-              })}
-              { userDetails ? <><span>Hey, {userDetails.firstName} </span> <span onClick={onLogout}>Logout</span></> : <li>
-                {/* <Button onClick={onLogin}>Login</Button> */}
-                <Link to={'/login'}>Login</Link>
-              </li>}
+              {showSearch ? (
+                <>
+                  <div>
+                    <Input
+                      placeholder="Search the store"
+                      onChange={searchOnChange}
+                      onPressEnter={onSearch}
+                    />
+                    <span onClick={onCloseSearch}>
+                      <CloseOutlined />
+                    </span>
+                    {productList && productList.length ? (
+                      <div className="search-product-list">
+                        <ul>
+                          {productList.map((item) => {
+                            return (
+                              <li>
+                                <div>
+                                  <div>
+                                    <Link
+                                      to={`/products${item.custom_url.url}`}
+                                    >
+                                      <img
+                                        src="https://www.junglescout.com/wp-content/uploads/2021/01/product-photo-water-bottle-hero.png"
+                                        width="66"
+                                        alt={item.name}
+                                        height="66"
+                                      />
+                                    </Link>
+                                  </div>
+                                  <div>
+                                    <p>
+                                      <Link
+                                        to={`/products${item.custom_url.url}`}
+                                      >
+                                        {item.name}
+                                      </Link>
+                                    </p>
+                                    <p>
+                                      {item.price.toLocaleString(
+                                        "en-US",
+                                        {
+                                          style: "currency",
+                                          currency: "USD",
+                                          minimumFractionDigits: 0,
+                                        }
+                                      )}
+                                    </p>
+                                  </div>
+                                </div>
+                              </li>
+                            );
+                          })}
+                        </ul>
+                      </div>
+                    ) : <>
+                      {
+                        noProductFoundError ? <span>0 product results for '{searchText}'</span> : null
+                      }
+                    </>}
+                  </div>
+                </>
+              ) : (
+                <>
+                  {topNavigation.map((item, index) => {
+                    const { pageUrl, title, sublink } = item;
+                    return (
+                      <li>
+                        <Link to={`/${pageUrl}`}>
+                          {title}{" "}
+                          {sublink && sublink.length && <DownOutlined />}
+                        </Link>
+                        {sublink && sublink.length ? (
+                          <ul>
+                            {sublink.map((link) => {
+                              return (
+                                <li>
+                                  <Link to={`/${link.pageUrl}`}>
+                                    {link.title}
+                                  </Link>
+                                </li>
+                              );
+                            })}
+                          </ul>
+                        ) : null}
+                      </li>
+                    );
+                  })}
+                  {userDetails ? (
+                    <>
+                      <span>Hey, {userDetails.firstName} </span>{" "}
+                      <span onClick={onLogout}>Logout</span>
+                    </>
+                  ) : (
+                    <li>
+                      {/* <Button onClick={onLogin}>Login</Button> */}
+                      <Link to={"/login"}>Login</Link>
+                    </li>
+                  )}
+                  <span onClick={() => setShowSearch(true)}>
+                    <SearchOutlined />
+                  </span>
+                </>
+              )}
             </ul>
           </nav>
         </div>
