@@ -3,8 +3,90 @@ const axios = require("axios");
 const cors = require("cors");
 const bodyParser = require("body-parser");
 
-exports.createPages = ({ graphql, actions }) => {
+const storeUrl = "https://api.bigcommerce.com/stores/qjmdzrcw";
+const apiToken = "lukvrlbivyj2c3i0ghiel647g1tv60l";
+
+let products = [];
+async function getProductList(page = 1) {
+  let url = `${storeUrl}/v3/catalog/products?include=images,variants,custom_fields,options,modifiers,videos&is_visible=true&limit=250&page=${page}`;
+  const config = {
+    method: "get",
+    withCredentials: false,
+    mode: "no-cors",
+    url,
+    headers: {
+      "sec-ch-ua":
+        '"Chromium";v="104", " Not A;Brand";v="99", "Google Chrome";v="104"',
+      Referer: "http://localhost:8000/",
+      "X-Auth-Token": apiToken,
+      "Content-Type": "application/json",
+    },
+  };
+
+  const result = await axios(config)
+    .then(function (response) {
+      return response.data;
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+  return result;
+}
+
+
+async function getAllBigcommercePrduct() {
+  try {
+    const productList = [];
+    let page = 1;
+    let result = await getProductList(page);
+    productList.push(...result.data);
+    // console.log(result)
+    let loadMore = result && result.meta.pagination.links.next;
+    while (loadMore) {
+      page = page + 1;
+      result = await getProductList(page);
+      if (result.data) {
+        productList.push(...result.data);
+      }
+      loadMore = result && result.meta.pagination.links.next;
+      if(page === 3) {
+        loadMore = false;
+      }
+    }
+    return productList;
+    // if(result && result.meta.pagination.link.next) {
+    //   page = page + 1;
+    //   do {
+
+    //   } while
+    // }
+
+  } catch (e) {
+    console.log("error", e)
+  }
+}
+
+
+
+exports.createPages = async ({ graphql, actions }) => {
   const { createPage } = actions;
+
+  if(!products || !products.length) {
+    products = await getAllBigcommercePrduct();
+  }
+  console.log(products.length);
+
+
+  products.forEach((item) => {
+    const { custom_url, id } = item;
+    createPage({
+      path: `/products${custom_url.url}`,
+      component: path.resolve(`src/templates/product.js`),
+      context: {
+        productId: id,
+      },
+    });
+  });
   return new Promise((resolve, reject) => {
     resolve(
       graphql(`
@@ -75,15 +157,6 @@ exports.createPages = ({ graphql, actions }) => {
                 }
               }
             }
-            allBigCommerceProducts {
-              nodes {
-                id
-                name
-                custom_url {
-                  url
-                }
-              }
-            }
             allBigCommerceCategories {
               nodes {
                 id
@@ -149,18 +222,18 @@ exports.createPages = ({ graphql, actions }) => {
             }
           });
 
-          category.forEach;
-          const products = result.data.allBigCommerceProducts.nodes;
+          // category.forEach;
+          // const products = result.data.allBigCommerceProducts.nodes;
 
-          products.forEach(({ custom_url, id }) => {
-            createPage({
-              path: `/products${custom_url.url}`,
-              component: path.resolve(`src/templates/product.js`),
-              context: {
-                productId: id,
-              },
-            });
-          });
+          // products.forEach(({ custom_url, id }) => {
+          //   createPage({
+          //     path: `/products${custom_url.url}`,
+          //     component: path.resolve(`src/templates/product.js`),
+          //     context: {
+          //       productId: id,
+          //     },
+          //   });
+          // });
           const blogPostTemplate = path.resolve("src/templates/blog-post.js");
           result.data.allContentfulBlog.nodes.forEach((node) => {
             console.log(node.pageUrl);
@@ -180,18 +253,16 @@ exports.createPages = ({ graphql, actions }) => {
 };
 
 exports.onCreateDevServer = ({ app }) => {
-  const storeUrl = "https://api.bigcommerce.com/stores/qjmdzrcw";
-  const apiToken = "lukvrlbivyj2c3i0ghiel647g1tv60l";
 
   app.use(cors());
   app.use(bodyParser.urlencoded({ extended: true }));
   app.use(bodyParser.json());
 
-  app.get("/BC/getToken", async function(req, res) {
+  app.get("/BC/getToken", async function (req, res) {
     const data = JSON.stringify({
-      channel_id: 1,
-      expires_at: 1661407865,
-      allowed_cors_origins: ["http://localhost:8000"],
+      channel_id: 1186477,
+      expires_at: 1725183309,
+      allowed_cors_origins: ["https://life-style-demo.netlify.app"],
     });
 
     const config = {
@@ -210,16 +281,16 @@ exports.onCreateDevServer = ({ app }) => {
     };
 
     const result = await axios(config)
-      .then(function(response) {
+      .then(function (response) {
         return response.data;
       })
-      .catch(function(error) {
+      .catch(function (error) {
         console.log(error);
       });
     res.send(result);
   });
 
-  app.post("/BC/login", async function(req, res) {
+  app.post("/BC/login", async function (req, res) {
     const data = JSON.stringify({
       operationName: "Login",
       variables: {
@@ -252,18 +323,18 @@ exports.onCreateDevServer = ({ app }) => {
     };
 
     const result = await axios(config)
-      .then(function(response) {
+      .then(function (response) {
         res.header(response.headers);
         return { data: response.data.data.login, tokens: response.headers };
       })
-      .catch(function(error) {
+      .catch(function (error) {
         console.log(error);
       });
     // res.cookie
     res.send(result);
   });
 
-  app.get("/BC/countries", async function(req, res) {
+  app.get("/BC/countries", async function (req, res) {
     const config = {
       method: "get",
       withCredentials: false,
@@ -279,16 +350,16 @@ exports.onCreateDevServer = ({ app }) => {
     };
 
     const result = await axios(config)
-      .then(function(response) {
+      .then(function (response) {
         return response.data;
       })
-      .catch(function(error) {
+      .catch(function (error) {
         console.log(error);
       });
     res.send(result);
   });
 
-  app.get("/BC/states/:stateId", async function(req, res) {
+  app.get("/BC/states/:stateId", async function (req, res) {
     const config = {
       method: "get",
       withCredentials: false,
@@ -304,16 +375,16 @@ exports.onCreateDevServer = ({ app }) => {
     };
 
     const result = await axios(config)
-      .then(function(response) {
+      .then(function (response) {
         return response.data;
       })
-      .catch(function(error) {
+      .catch(function (error) {
         console.log(error);
       });
     res.send(result);
   });
 
-  app.post("/BC/signUp", async function(req, res) {
+  app.post("/BC/signUp", async function (req, res) {
     const {
       password,
       email,
@@ -368,29 +439,35 @@ exports.onCreateDevServer = ({ app }) => {
     };
 
     const result = await axios(config)
-      .then(function(response) {
+      .then(function (response) {
         return response.data;
       })
-      .catch(function(error) {
+      .catch(function (error) {
         console.log(error.response.data);
         res.status(422);
       });
     res.send(result);
   });
 
-  app.get("/BC/productList", async function(req, res) {
+  app.get("/BC/productList", async function (req, res) {
     const sort = req.query.sort || 'id';
     const direction = req.query.direction || 'asc';
     let url = `${storeUrl}/v3/catalog/products?include=images,variants,custom_fields,options,modifiers,videos&is_visible=true&direction=${direction}&sort=${sort}`;
-    if(req.query.category) {
-      url= url + `&categories:in=${req.query.category}`;
+    if (req.query.category) {
+      url = url + `&categories:in=${req.query.category}`;
     }
-    if(req.query.keyword) {
-      url= url + `&keyword=${req.query.keyword}`;
+    if (req.query.keyword) {
+      url = url + `&keyword=${req.query.keyword}`;
     }
-    if(req.query.page) {
-      url = url+ `&page=${req.query.page}`;
+    if (req.query.page) {
+      url = url + `&page=${req.query.page}`;
     }
+    if (req.query.idIn) {
+      url = url + `&id:in=${encodeURIComponent(req.query.idIn)}`
+    }else if (req.query.id) {
+      url = url + `&id=${req.query.id}`
+    }
+    console.log(url)
     const config = {
       method: "get",
       withCredentials: false,
@@ -406,10 +483,10 @@ exports.onCreateDevServer = ({ app }) => {
     };
 
     const result = await axios(config)
-      .then(function(response) {
+      .then(function (response) {
         return response.data;
       })
-      .catch(function(error) {
+      .catch(function (error) {
         console.log(error);
       });
     res.send(result);
@@ -422,4 +499,34 @@ exports.onCreateDevServer = ({ app }) => {
       `listening to changes for live preview at route /___BCPreview`
     )
   );
+};
+
+exports.sourceNodes = async ({
+  actions,
+  createNodeId,
+  createContentDigest
+}) => {
+  const {
+    createNode
+  } = actions;
+  if(!products || !products.length) {
+    products = await getAllBigcommercePrduct();
+  }
+  const handleGenerateNodes = (node, name='bigCommerceProducts') => {
+    return { ...node,
+      id: createNodeId(node.id),
+      bigcommerce_id: node.id,
+      parent: null,
+      children: [],
+      internal: {
+        type: name,
+        content: JSON.stringify(node),
+        contentDigest: createContentDigest(node)
+      }
+    };
+  };
+  if(products) {
+    products.map((item) => createNode(handleGenerateNodes(item)))
+  }
+
 };
