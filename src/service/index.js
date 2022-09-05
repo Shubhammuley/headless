@@ -3,7 +3,7 @@ import axios from "axios";
 export const getCountries = async () => {
   const config = {
       method: "get",
-      url: "http://localhost:8088/BC/countries",
+      url: "/api/countries",
     };
     const result = await axios(config)
       .then(function(response) {
@@ -18,7 +18,7 @@ export const getCountries = async () => {
 export const getStates = async (countryId) => {
   const config = {
       method: "get",
-      url: `http://localhost:8088/BC/states/${countryId}`,
+      url: `/api/states/${countryId}`,
     };
     const result = await axios(config)
       .then(function(response) {
@@ -33,7 +33,7 @@ export const getStates = async (countryId) => {
 export const signUp = async (data) => {
   const config = {
       method: "post",
-      url: `http://localhost:8088/BC/signUp`,
+      url: `/api/signUp`,
       data,
     };
     const result = await axios(config)
@@ -47,14 +47,20 @@ export const signUp = async (data) => {
     return result;
 }
 
-export const getProductList = async ({ page = 1, sort= 'id', direction= 'asc', category= null, keyword }) => {
-  let url = `http://localhost:8088/BC/productList?page=${page}&sort=${sort}&direction=${direction}`;
+export const getProductList = async ({ page = 1, sort= 'id', direction= 'asc', category= null, keyword, idIn, id }) => {
+  let url = `/api/productList?page=${page}&sort=${sort}&direction=${direction}`;
   if (category) {
-    url = url + `&category=${category}`
+    url = url + `&category=${category}`;
   }
 
   if (keyword) {
-    url = url + `&keyword=${keyword}`
+    url = url + `&keyword=${keyword}`;
+  }
+
+  if(idIn) {
+    url = url + `&idIn=${idIn}`;
+  } else if (id) {
+    url = url + `&id=${id}`;
   }
   const config = {
       method: "get",

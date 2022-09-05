@@ -18,7 +18,7 @@ module.exports = {
       accessToken: 'lukvrlbivyj2c3i0ghiel647g1tv60l',
       storeHash: 'qjmdzrcw',
       endpoints: {
-        BigCommerceProducts: '/catalog/products?include=images,variants,custom_fields,options,modifiers,videos&is_visible=true',
+        // BigCommerceProducts: '/catalog/products?include=images,variants,custom_fields,options,modifiers,videos&is_visible=true',
         BigCommerceCategories: '/catalog/categories',
         BigCommerceBrands: "/catalog/brands"
       }
