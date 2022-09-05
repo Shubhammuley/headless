@@ -1,0 +1,73 @@
+@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&family=Roboto:wght@400;500;700;900&family=Rubik:ital,wght@0,300;0,400;0,500;0,700;0,900;1,300;1,400;1,500;1,600;1,700;1,900&display=swap');
+$theme-primary-color: #2e3344;
+$theme-base-font-family: 'Rubik', sans-serif;
+$body-second-font: 'Roboto', sans-serif;
+$body-third-font:'Caveat', cursive;
+$theme-white-color: #ffffff;
+$theme-black-color: #000000;
+$theme-light-color: #f3f3f3;
+$theme-light-black-color: #333333;
+$theme-light-gray-color: #666666;
+$card-backgrond-color: #f5f5f5;
+$theme-dark-color: #888888;
+$light-border-color: #e4e4e4;
+$dark-border-color: #888888;
+$theme-red-color: #ea272d;
+$theme-button-hover-background-color: #4b5061;
+$theme-green-color:#5dcb6c;
+$footer-backgroundColor: #ffffff;
+$footer-font-color: #666666;
+$footer-font-hover-color: #2e3344;
+$footer-info-heading-color: #2e3344;
+
+// Mixing Style Start
+@mixin border-radius($radius) {
+    -webkit-border-radius: $radius;
+    -moz-border-radius: $radius;
+    border-radius: $radius;
+  }
+  @mixin display-flex($flex){
+    display: -webkit-box;
+    display: -moz-box;
+    display: -ms-flexbox;
+    display: -webkit-flex;
+    display: $flex;
+  }
+  @mixin align-item($align-item){
+    -webkit-box-align: $align-item;
+    -moz-box-align: $align-item;
+    -ms-flex-align: $align-item;
+    -webkit-align-items: $align-item;
+    align-items: $align-item;
+  }
+  @mixin align-self($align-self){
+    -webkit-align-self: $align-self;
+    align-self: $align-self;
+  }
+  @mixin justify-content($justify-content){
+    -webkit-justify-content: $justify-content;
+    justify-content: $justify-content;
+  }
+  @mixin flex-wrap($flex-wrap){
+    flex-wrap: $flex-wrap;
+    -webkit-flex-wrap: $flex-wrap;
+  }
+  @mixin flex-flow($flex-flow){
+    flex-wrap: $flex-flow;
+    -webkit-flex-wrap: $flex-flow;
+  }
+  @mixin flex-direction($flex-direction){
+    flex-direction: $flex-direction;
+    -webkit-flex-direction: $flex-direction;
+  }
+  @mixin transform-rotate($transform-rotate){
+    -ms-transform: rotate($transform-rotate);
+    -webkit-transform: rotate($transform-rotate);
+    transform: rotate($transform-rotate);
+  }
+  @mixin box-shadow($shadow) {
+    -webkit-box-shadow: $shadow;
+    -moz-box-shadow: $shadow;
+    box-shadow: $shadow;
+  }
+  // Mixing Style End

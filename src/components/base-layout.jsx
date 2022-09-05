@@ -2,10 +2,15 @@ import React, { Fragment, useEffect, useState } from "react";
 import { Link, navigate } from "gatsby";
 import useTopNavigation from "../hooks/use-top-navigation";
 import useBottomNavigation from "../hooks/use-bottom-navigation";
-import { Menu, message, Input } from "antd";
+import { Menu, message, Input, Col, Row } from "antd";
 import "./base-component.css";
+import "../assets/scss/theme.scss";
 import { getProductList } from "../service";
 import image from "../logo/logo.webp";
+import IconUser from '../assets/icons/user.svg';
+/*import { ReactComponent as IconCompare } from '../assets/icons/compare.svg';
+import { ReactComponent as IconSearch } from '../assets/icons/search.svg';
+import { ReactComponent as IconCart } from '../assets/icons/cart.svg';*/
 import {
   MenuFoldOutlined,
   MenuUnfoldOutlined,
@@ -58,12 +63,15 @@ const RootElement = ({ children }) => {
     setUserDetails(null);
     openNotification("sucess", "Successfully logged out");
   };
-
+  const handleToggle = () => {
+    setCollapsed(!collapsed);
+  };
   const onCloseSearch = () => {
     setShowSearch(false);
     SetNotProductFoundError(false);
     setProductList([]);
   };
+  
 
   const onSearch = (e) => {
     onCloseSearch();
@@ -116,22 +124,28 @@ const RootElement = ({ children }) => {
   };
   return (
     <Fragment>
-      <div class="fixed-header">
+      <div class="fixed-header header">
         <div class="container">
+        <Row align="middle">
+          <Col className="gutter-row" span={6}>
+            <div className="header-left">
+            <div class="desktop_mobile_menu">
+              <a class="trigger" href="javascript:void(0);" onClick={handleToggle}>
+                <span class="otherlinks-line-1"></span>
+                <span class="otherlinks-line-2"></span>
+                <span class="otherlinks-line-3"></span>
+                <span class="otherlinks-line-4"></span>
+              </a>
+            </div>
+              <Link to={"/"}>
+                <img src={image} />
+              </Link>
+            </div>
+          </Col>
+          <Col className="gutter-row header-center" span={12}>
           <nav>
             <ul id="nav">
-              <li>
-                {React.createElement(
-                  collapsed ? MenuUnfoldOutlined : MenuFoldOutlined,
-                  {
-                    className: "trigger",
-                    onClick: () => setCollapsed(!collapsed),
-                  }
-                )}
-                <Link to={"/"}>
-                  <img src={image} />
-                </Link>
-              </li>
+              
               {showSearch ? (
                 <>
                   <div>
@@ -238,18 +252,16 @@ const RootElement = ({ children }) => {
               )}
             </ul>
           </nav>
+          </Col>
+          <Col className="gutter-row" span={6}>
+                  <img src={IconUser} />  
+          </Col>
+        </Row>
+          
         </div>
       </div>
-      <div
-        class="container"
-        style={{
-          marginTop: "100px",
-          marginBottom: "500px",
-          paddingBottom: "200px",
-        }}
-      >
-        {!collapsed && (
-          <div>
+      
+          <div className={!collapsed ? "nav-bar collapsed" : "nav-bar"}>
             <Menu
               mode="inline"
               style={{
@@ -258,9 +270,7 @@ const RootElement = ({ children }) => {
               items={[sideBar]}
             />
           </div>
-        )}
-        {children}
-      </div>
+          {children}
       <div class="fixed-footer">
         <div class="container">
           <div>
