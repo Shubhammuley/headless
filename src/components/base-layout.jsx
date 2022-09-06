@@ -2,13 +2,13 @@ import React, { Fragment, useEffect, useState } from "react";
 import { Link, navigate } from "gatsby";
 import useTopNavigation from "../hooks/use-top-navigation";
 import useBottomNavigation from "../hooks/use-bottom-navigation";
-import { Menu, message, Input, Col, Row } from "antd";
+import { Menu, message, Input, Col, Row,Form,Button } from "antd";
 import "./base-component.css";
 import "../assets/scss/theme.scss";
 import { getProductList } from "../service";
 import image from "../logo/logo.webp";
-import IconUser from '../assets/icons/user.svg';
-/*import { ReactComponent as IconCompare } from '../assets/icons/compare.svg';
+/*import IconUser from '../assets/icons/user.svg';
+import { ReactComponent as IconCompare } from '../assets/icons/compare.svg';
 import { ReactComponent as IconSearch } from '../assets/icons/search.svg';
 import { ReactComponent as IconCart } from '../assets/icons/cart.svg';*/
 import {
@@ -254,7 +254,7 @@ const RootElement = ({ children }) => {
           </nav>
           </Col>
           <Col className="gutter-row" span={6}>
-                  <img src={IconUser} />  
+            
           </Col>
         </Row>
           
@@ -271,27 +271,89 @@ const RootElement = ({ children }) => {
             />
           </div>
           {children}
-      <div class="fixed-footer">
-        <div class="container">
-          <div>
-            <span>Lorem ipsum dolor sit amet, consectetur, LA 62303</span>
-            <span>
-              <a href="tel:636-377-2140">636-377-2140</a>
-            </span>
-          </div>
-          <h3>Quick Links</h3>
-          <ul>
-            {topNavigation.map((item, index) => {
-              const { pageUrl, title } = item;
-              return (
-                <li>
-                  <Link to={`/${pageUrl}`}>{title}</Link>
-                </li>
-              );
-            })}
-          </ul>
-        </div>
-      </div>
+          <footer className="footer">
+              <div className="footer-info-inn">
+                <div className="container">
+                  <Row className="footer-info" gutter={20}>
+                    <Col span={4} className='footer-info-col footer-info-col--small footer-store-info'>
+                      <p><span>Lorem ipsum dolor sit amet,{'\n'}consectetur, LA 62303</span></p>
+                      <p><span><a href="tel:636-377-2140">636-377-2140</a></span></p>
+                    </Col>
+                    <Col span={4} className='footer-info-col footer-info-col--small'>
+                      <div className="footer-info--col-inn">
+                      <h5 class="footer-info-heading footer-toggle-title">Quick Links</h5>
+                      <div className="footer-toggle-content">
+                      <Menu className="footer-info-list">
+                      {topNavigation.map((item, index) => {
+                        const { pageUrl, title } = item;
+                        return (
+                          <Menu.Item>
+                            <Link to={`/${pageUrl}`}>{title}</Link>
+                          </Menu.Item>
+                        );
+                      })}
+                      </Menu>
+                      </div>
+                      </div>
+                      
+                    </Col>
+                    <Col span={4} className='footer-info-col footer-info-col--small'>
+                      <div className="footer-info--col-inn">
+                      <h5 class="footer-info-heading footer-toggle-title">Popular Brands</h5>
+                      <div className="footer-toggle-content">
+                      <Menu className="footer-info-list">
+                        <Menu.Item><Link to=''>OFS</Link></Menu.Item>
+                        <Menu.Item><Link to=''>Common Good</Link></Menu.Item>
+                        <Menu.Item className="view-all"><Link to=''>View All</Link></Menu.Item>
+                      </Menu>
+                      </div>
+                      </div>
+                    </Col>
+                    <Col span={4} className='footer-info-col footer-info-col--small'>
+                      <div className="footer-info--col-inn">
+                      <h5 className="footer-info-heading footer-toggle-title">Categories</h5>
+                      <div className="footer-toggle-content">
+                      <Menu className="footer-info-list">
+                        <Menu.Item><Link to=''>Women</Link></Menu.Item>
+                        <Menu.Item><Link to=''>Men</Link></Menu.Item>
+                        <Menu.Item><Link to=''>Kids</Link></Menu.Item>
+                        <Menu.Item><Link to=''>Accessories</Link></Menu.Item>
+                        <Menu.Item className="view-all"><Link to=''>View All</Link></Menu.Item>
+                      </Menu>
+                      </div>
+                      </div>
+                    </Col>
+                  </Row>
+                  <Row className="footer-mid-section" gutter={20}>
+                  <Col span={8} className='footer-info-col footer-info-col--social footer-info-col--left'><h5 class="footer-info-heading">Connect With Us</h5></Col>
+                  <Col span={16} className='footer-info-col footer-info-newsletter'>
+                    <div className="footer-info-newsletter-inn">
+                    <h5 className="footer-info-heading">Sign Up for our Newsletter</h5>
+                    <Form wrapperCol={{ span: 32 }} initialValues={{ remember: true }}>
+                    <Form.Item name="nl_email" rules={[{ required: true, message: 'Please input your email!' }]}>
+                      <Input className="form-input" placeholder="Join our Newsletter..." />
+                    </Form.Item>
+                    <Form.Item>
+                      <Button type="primary" className='button button--primary'>Submit</Button>
+                    </Form.Item>
+                    </Form>
+                    </div>
+                  </Col>
+                  <Col span={8} className='footer-info-col footer-info-col--payment'></Col>
+                  </Row>
+                </div>
+              </div>
+              <div className="footer-bar">
+                <div className="container">
+                  <div className="footer-bar-inn">
+                    <div className="footer-copyright"><p className="powered-by"><span>© 2022</span><span className="theme-color">LifeStyle Default</span> <span className="line">|</span><span className="bigcommerce">Powered by <Link href='https://www.bigcommerce.com/?utm_source=lifestyle&amp;utm_medium=poweredbyBC' target="_blank">BigCommerce</Link><span className="line">|</span></span><Link className="site-map" href="/sitemap.php">Sitemap</Link></p></div>
+                    <div className="footer-copyright">
+                    <p class="powered-by">BigCommerce Theme by <Link class="theme-red-color" href="https://www.1center.co/" rel="nofollow" target="_blank">1Center</Link></p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+          </footer>
     </Fragment>
   );
 };
