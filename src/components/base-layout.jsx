@@ -7,7 +7,7 @@ import "./base-component.css";
 import "../assets/scss/theme.scss";
 import { getProductList } from "../service";
 import image from "../logo/logo.webp";
-import IconUser from '../assets/icons/user.svg';
+// import IconUser from '../assets/icons/user.svg';
 /*import { ReactComponent as IconCompare } from '../assets/icons/compare.svg';
 import { ReactComponent as IconSearch } from '../assets/icons/search.svg';
 import { ReactComponent as IconCart } from '../assets/icons/cart.svg';*/
@@ -125,7 +125,7 @@ const RootElement = ({ children }) => {
   return (
     <Fragment>
       <div class="fixed-header header">
-        <div class="container">
+        <div class="container" >
         <Row align="middle">
           <Col className="gutter-row" span={6}>
             <div className="header-left">
@@ -254,7 +254,7 @@ const RootElement = ({ children }) => {
           </nav>
           </Col>
           <Col className="gutter-row" span={6}>
-                  <img src={IconUser} />  
+                  {/* <IconUser /> */}
           </Col>
         </Row>
           
@@ -270,7 +270,9 @@ const RootElement = ({ children }) => {
               items={[sideBar]}
             />
           </div>
+          <div onClick={()=> setCollapsed(true)}>
           {children}
+          </ div>
       <div class="fixed-footer">
         <div class="container">
           <div>

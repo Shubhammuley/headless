@@ -1,8 +1,10 @@
 import axios from "axios";
 
 export default async function handler(req, res) {
+  console.log("------");
   const storeUrl = "https://api.bigcommerce.com/stores/qjmdzrcw";
   const apiToken = "lukvrlbivyj2c3i0ghiel647g1tv60l";
+  console.log("------");
 
     const sort = req.query.sort || 'id';
     const direction = req.query.direction || 'asc';
