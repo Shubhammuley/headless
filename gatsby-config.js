@@ -1,3 +1,8 @@
+const proxy = require('http-proxy-middleware');
+require("dotenv").config({
+  path: `.env.${process.env.NODE_ENV || 'development'}`,
+})
+console.log(process.env)
 module.exports = {
   siteMetadata: {
     title: `demo-gatsby-with-contentful`,
@@ -23,5 +28,16 @@ module.exports = {
         BigCommerceBrands: "/catalog/brands"
       }
     }
-  }, "gatsby-plugin-sass", `gatsby-plugin-image`]
+  }, "gatsby-plugin-sass", `gatsby-plugin-image`],
+  developMiddleware: app => {
+    app.use(
+      '/.netlify/functions/',
+      proxy({
+        target: 'http://localhost:9000',
+        pathRewrite: {
+          '/.netlify/functions/': ''
+        }
+      })
+    );
+  }
 };

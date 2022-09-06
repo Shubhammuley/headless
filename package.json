@@ -9,10 +9,14 @@
   ],
   "scripts": {
     "netlify": "netlify login",
+    "start:lambda": "netlify-lambda serve src/lamda",
+    "build:lambda": "netlify-lambda build src/lamda",
     "netlify:deploy": "netlify deploy -d public -p",
-    "develop": "gatsby develop",
-    "start": "gatsby develop",
-    "build": "gatsby build",
+    "develop": "API_URL=gatsby_url gatsby develop",
+    "start": "concurrently \"yarn start:lambda\" \"yarn develop\"",
+    "build:app": "npm run clean && gatsby build",
+    "build": "npm run clean && gatsby build",
+    "netlify-build": "run-p build:**",
     "serve": "gatsby serve",
     "clean": "gatsby clean"
   },

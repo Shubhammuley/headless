@@ -14,7 +14,7 @@ import Banner1 from '../images/banner-1.jpg';
 import Banner2 from '../images/banner-2.jpg';
 import Banner3 from '../images/banner-3.jpg';
 import Banner4 from '../images/banner-4.jpg';
-
+import config from '../enviornment'
 const contentStyle = {
   height: "100px",
   color: "#fff",
@@ -31,6 +31,8 @@ const getBlogDescription = (description) => {
   return renderRichText(description)[0].props.children;
 }
 const IndexPage = () => {
+console.log(config)
+
   const allBlogPost = useAllBlogPost();
   const allHomePageSlider = useAllHomePageSlider();
   const allProductList = useProductList();

@@ -1,9 +1,10 @@
 import axios from "axios";
+import environmentConfig from "../enviornment";
 
 export const getCountries = async () => {
   const config = {
       method: "get",
-      url: "/api/countries",
+      url: environmentConfig.apiUrl.getCountries,
     };
     const result = await axios(config)
       .then(function(response) {
@@ -18,7 +19,7 @@ export const getCountries = async () => {
 export const getStates = async (countryId) => {
   const config = {
       method: "get",
-      url: `/api/states/${countryId}`,
+      url: `${environmentConfig.apiUrl.getState}?stateId=${countryId}`,
     };
     const result = await axios(config)
       .then(function(response) {
@@ -33,7 +34,7 @@ export const getStates = async (countryId) => {
 export const signUp = async (data) => {
   const config = {
       method: "post",
-      url: `/api/signUp`,
+      url: environmentConfig.apiUrl.signUp,
       data,
     };
     const result = await axios(config)
@@ -48,7 +49,7 @@ export const signUp = async (data) => {
 }
 
 export const getProductList = async ({ page = 1, sort= 'id', direction= 'asc', category= null, keyword, idIn, id }) => {
-  let url = `/api/productList?page=${page}&sort=${sort}&direction=${direction}`;
+  let url = `${environmentConfig.apiUrl.getProduct}?page=${page}&sort=${sort}&direction=${direction}`;
   if (category) {
     url = url + `&category=${category}`;
   }

@@ -43,27 +43,24 @@ function ProductDetails({
     })();
   }, [pageContext]);
 
-  const {
-    images,
-    name,
-    custom_url,
-    page_title,
-    price,
-    reviews_rating_sum,
-    upc,
-    sku,
-    is_free_shipping,
-    fixed_cost_shipping_price,
-    weight,
-    options,
-    description,
-    warranty,
-    videos,
-    related_products,
-  } = product;
-
-
-
+  // const {
+  //   images,
+  //   name,
+  //   custom_url,
+  //   page_title,
+  //   price,
+  //   reviews_rating_sum,
+  //   upc,
+  //   sku,
+  //   is_free_shipping,
+  //   fixed_cost_shipping_price,
+  //   weight,
+  //   options,
+  //   description,
+  //   warranty,
+  //   videos,
+  //   related_products,
+  // } = product;
 
 
   const field = useMemo(() => {

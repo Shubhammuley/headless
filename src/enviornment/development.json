@@ -1,0 +1,18 @@
+{
+  "gatsby_url": {
+    "getCountries": "/api/countries",
+    "signUp": "/api/signUp",
+    "login": "/api/login",
+    "getToken": "/api/getToken",
+    "getProduct": "/api/productList",
+    "getState" : "/api/states"
+  },
+  "netlify_lambda": {
+    "getCountries": "/.netlify/functions/countries",
+    "signUp": "/.netlify/functions/signUp",
+    "login": "/.netlify/functions/login",
+    "getToken": "/.netlify/functions/getToken",
+    "getProduct": "/.netlify/functions/productList",
+    "getState" : "/.netlify/functions/states"
+  }
+}
