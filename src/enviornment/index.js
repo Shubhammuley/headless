@@ -1,6 +1,6 @@
-const ENV = "development";
+const ENV = process.env.NODE_ENV || 'development';
 const config = require('./' + ENV);
-const apiEnv = 'gatsby_url';
+const apiEnv = process.env.API_URL || 'netlify_lambda';
 const apiUrl = config[apiEnv]
 module.exports = {
     apiUrl,
