@@ -31,7 +31,7 @@ const getBlogDescription = (description) => {
   return renderRichText(description)[0].props.children;
 }
 const IndexPage = () => {
-console.log(config)
+console.log(process.env)
 
   const allBlogPost = useAllBlogPost();
   const allHomePageSlider = useAllHomePageSlider();
