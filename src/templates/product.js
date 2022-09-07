@@ -1,11 +1,12 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { graphql, Link } from 'gatsby';
+import { Link, navigate } from 'gatsby';
 import {
   ReadOutlined,
   SafetyOutlined,
-  PlaySquareOutlined
+  PlaySquareOutlined,
+  HeartOutlined,
 } from '@ant-design/icons';
-import { Breadcrumb, Layout, Rate, Collapse, Form } from "antd";
+import { Breadcrumb, Layout, Rate, Collapse, Form, Button } from "antd";
 // import AddToCartButton from '../components/bigcommerce/AddToCartButton';
 // import ProductPrices from '../components/bigcommerce/ProductPrices';
 import RootElement from '../components/base-layout';
@@ -13,21 +14,36 @@ import AddToCartForm from '../modules/addToCart';
 import { getProductList } from '../service';
 import ProductCard from '../modules/product-card';
 import DefaultLoader from '../components/PageLoading/DefaultLoader';
+import WishListModal from '../modules/wishlist-modal';
 
 const { Content } = Layout;
 const { Panel } = Collapse;
 
 function ProductDetails({
-  pageContext
+  pageContext,
+  location
 }) {
   const [form] = Form.useForm();
-
+// console.log(location)
   const [product, setProduct] = useState({});
+  const [showModal, setShowModal] = useState(false);
   const [loading, setLoading] = useState(true);
   const [selectedImage, updateSelectedImage] = useState();
   const [selectedVideo, setSelectedVideo] = useState();
   const [relatedProducts, setRelatedProducts] = useState([]);
 
+  const addProductToWishList = () => {
+    const user = localStorage.getItem('loggedUserBc');
+    if(!user || user === 'null' || user === 'undefined') {
+      navigate('/login', {state: location.pathname }); 
+    } else {
+      setShowModal(true);
+    }
+  }
+
+  const closeModal = () => {
+    setShowModal(false);
+  }
   useEffect(()=> {
     (async () => {
       const result = await getProductList({ id: pageContext.productId })
@@ -43,6 +59,7 @@ function ProductDetails({
     })();
   }, [pageContext]);
 
+  
   // const {
   //   images,
   //   name,
@@ -90,7 +107,6 @@ function ProductDetails({
     });
   }, [product])
 
-console.log(product)
   return (
     <RootElement>
       <Content>
@@ -166,6 +182,7 @@ console.log(product)
             <section className='product-details add-to-cart'>
               <div>
                 <AddToCartForm form={form} fields={field} />
+                <Button onClick={addProductToWishList}><HeartOutlined /></Button>
               </div>
             </section>
 
@@ -249,7 +266,7 @@ console.log(product)
               }
             </div>
           </div>}
-
+          <WishListModal isModalOpen={showModal} onClose={closeModal} productId={pageContext.productId}/>
         </div>
       </Content>
     </RootElement>

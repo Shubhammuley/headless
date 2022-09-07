@@ -12,7 +12,7 @@ function ProductCard({ productDetails }) {
       <Link to={`/products${productDetails.custom_url.url}`}>
         <div className="card-img-container">
         <img
-        src="https://www.junglescout.com/wp-content/uploads/2021/01/product-photo-water-bottle-hero.png"
+        src={productDetails.image || "https://www.junglescout.com/wp-content/uploads/2021/01/product-photo-water-bottle-hero.png"}
         width="224"
         alt={productDetails.name}
         height="224"

@@ -63,7 +63,7 @@ export default async function handler(req, res) {
         })
         .catch(function (error) {
           console.log(error.response.data);
-          res.status(500).json({ message: 'Error!' });
+          res.status(500).json({ message:  error.response.data});
         });
       res.send(result);
 }

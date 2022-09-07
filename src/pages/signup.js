@@ -38,7 +38,8 @@ function SignUp() {
   const [countries, setCountries] = useState([]);
   const [states, setStates] = useState(null);
 
-  useEffect(async () => {
+
+  const onLoadFunction = async () => {
     try {
       setLoading(true);
       const contries = await getCountries();
@@ -55,12 +56,14 @@ function SignUp() {
     } catch {
       setLoading(false);
     }
+  }
+  useEffect(() => {
+    onLoadFunction();
   }, []);
 
   const onFinish = async (value) => {
     try {
-       const response = await signUp(value);
-       console.log(response);
+       await signUp(value);
        navigate('/'); 
        openNotification("success", 'Sign up succesfull.')
     } catch(e) {

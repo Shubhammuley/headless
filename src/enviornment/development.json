@@ -5,7 +5,10 @@
     "login": "/api/login",
     "getToken": "/api/getToken",
     "getProduct": "/api/productList",
-    "getState" : "/api/states"
+    "getState" : "/api/states",
+    "createWishList": "/api/createWishList",
+    "getAllWishLists" : "/api/getAllWishList",
+    "addWishListItem": "/api/addWishListItem"
   },
   "netlify_lambda": {
     "getCountries": "/.netlify/functions/countries",
@@ -13,6 +16,9 @@
     "login": "/.netlify/functions/login",
     "getToken": "/.netlify/functions/getToken",
     "getProduct": "/.netlify/functions/productList",
-    "getState" : "/.netlify/functions/states"
+    "getState" : "/.netlify/functions/states",
+    "createWishList": "/.netlify/functions/createWishList",
+    "getAllWishLists" : "/.netlify/functions/getAllWishList",
+    "addWishListItem": "/.netlify/functions/addWishListItem"
   }
 }

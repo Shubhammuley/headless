@@ -4,10 +4,10 @@ export async function handler(req, res) {
     const storeUrl = "https://api.bigcommerce.com/stores/qjmdzrcw";
     const apiToken = "lukvrlbivyj2c3i0ghiel647g1tv60l";
     const data = JSON.stringify({
-        channel_id: 1186477,
-        expires_at: 1725183309,
-        allowed_cors_origins: ["https://life-style-demo.netlify.app"],
-    });
+      channel_id: 1,
+      expires_at: 1725183309,
+      allowed_cors_origins: ["http://localhost:8000"],
+  });
 
     const config = {
         method: "post",

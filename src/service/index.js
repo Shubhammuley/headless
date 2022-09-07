@@ -77,3 +77,54 @@ export const getProductList = async ({ page = 1, sort= 'id', direction= 'asc', c
       });
     return result;
 }
+
+
+export const createWishList = async (data) => {
+  const config = {
+      method: "post",
+      url: environmentConfig.apiUrl.createWishList,
+      data,
+    };
+    const result = await axios(config)
+      .then(function(response) {
+        return response.data;
+      })
+      .catch(function(error) {
+        // console.log(error.message);
+        throw Error(error.message);
+      });
+    return result;
+}
+
+export const getAllWishLists = async (customerId) => {
+  const config = {
+      method: "get",
+      url: `${environmentConfig.apiUrl.getAllWishLists}?customerId=${customerId}`,
+    };
+    const result = await axios(config)
+      .then(function(response) {
+        return response.data;
+      })
+      .catch(function(error) {
+        // console.log(error.message);
+        throw Error(error.message);
+      });
+    return result;
+}
+
+export const addProductToWishList = async (data) => {
+  const config = {
+      method: "post",
+      url: `${environmentConfig.apiUrl.addWishListItem}`,
+      data
+    };
+    const result = await axios(config)
+      .then(function(response) {
+        return response.data;
+      })
+      .catch(function(error) {
+        // console.log(error.message);
+        throw Error(error.message);
+      });
+    return result;
+}

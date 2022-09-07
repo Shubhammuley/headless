@@ -4,6 +4,7 @@ import useTopNavigation from "../hooks/use-top-navigation";
 import useBottomNavigation from "../hooks/use-bottom-navigation";
 import { Menu, message, Input, Col, Row } from "antd";
 import "./base-component.css";
+import 'antd/dist/antd.css';
 import "../assets/scss/theme.scss";
 import { getProductList } from "../service";
 import image from "../logo/logo.webp";
@@ -19,7 +20,6 @@ import {
   CloseOutlined,
 } from "@ant-design/icons";
 import { useCookies } from "react-cookie";
-
 // const { Sider } = Layout;
 
 const openNotification = (type, messageText) => {

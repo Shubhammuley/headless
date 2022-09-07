@@ -37,10 +37,11 @@ export default async function handler(req, res) {
     const result = await axios(config)
         .then(function (response) {
             res.header(response.headers);
+            console.log(response.data)
             return { data: response.data.data.login, tokens: response.headers };
         })
         .catch(function (error) {
-            console.log(error);
+          res.status(500).json({ message:  error.response.data});
         });
     // res.cookie
     res.send(result);
