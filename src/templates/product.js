@@ -266,7 +266,7 @@ function ProductDetails({
               }
             </div>
           </div>}
-          <WishListModal isModalOpen={showModal} onClose={closeModal} productId={pageContext.productId}/>
+          {showModal && <WishListModal isModalOpen={showModal} onClose={closeModal} productId={pageContext.productId}/> }
         </div>
       </Content>
     </RootElement>
