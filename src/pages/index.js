@@ -36,7 +36,7 @@ const IndexPage = () => {
   const allHomePageSlider = useAllHomePageSlider();
   const allProductList = useProductList();
   // console.log(allProductList)
-  var ProductSlider = {
+  const ProductSlider = {
     dots: false,
     arrows: true,
     infinite: false,

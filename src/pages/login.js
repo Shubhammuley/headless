@@ -44,7 +44,7 @@ function Login() {
     if (!token || force) {
       const config = {
         method: "get",
-        url: "http://localhost:8088/BC/getToken",
+        url: "/api/getToken",
       };
 
       const result = await axios(config)
@@ -60,7 +60,7 @@ function Login() {
 
     const login = await axios({
       method: "post",
-      url: "http://localhost:8088/BC/login",
+      url: "/api/login",
       data: {
         email,
         password,

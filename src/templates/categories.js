@@ -4,7 +4,7 @@ import { Link } from "gatsby";
 import { Breadcrumb, Layout } from "antd";
 import { makeTitle } from "../utils";
 import CategorySection from "../modules/category";
-import useProductList from "../hooks/use-all-product-list";
+// import useProductList from "../hooks/use-all-product-list";
 import { getProductList } from '../service';
 
 const { Content } = Layout;

@@ -125,7 +125,7 @@ const RootElement = ({ children }) => {
   return (
     <Fragment>
       <div class="fixed-header header">
-        <div class="container">
+        <div class="container" >
         <Row align="middle">
           <Col className="gutter-row" span={6}>
             <div className="header-left">
@@ -270,6 +270,7 @@ const RootElement = ({ children }) => {
               items={[sideBar]}
             />
           </div>
+          <div onClick={()=> setCollapsed(true)}>
           {children}
           <footer className="footer">
               <div className="footer-info-inn">
