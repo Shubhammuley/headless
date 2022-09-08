@@ -2,6 +2,7 @@ import * as React from "react";
 import moment from "moment";
 import "antd/dist/antd.css";
 import { Carousel } from "antd";
+import { Col, Row } from 'antd';
 import { UserOutlined, CalendarOutlined } from "@ant-design/icons";
 import { renderRichText } from 'gatsby-source-contentful/rich-text'
 import { Link } from "gatsby";
@@ -119,26 +120,42 @@ const IndexPage = () => {
         </div>
         </div>
       </div>
-      <div>
-        <h3>Lifestyle Blog</h3>
+      <div className="home-blog-post m-b-50">
+        <div className="container">
+        <div class="section-title">
+          <h2 class="page-heading">Lifestyle Blog</h2>
+          <p class="page-sub-heading">Discover our Style</p>
+        </div>
+        <div className="home-blog-list-wrap m-t-30 clearfix">
+        <Row className="home-blog-list" gutter={30}>
         {allBlogPost &&
           allBlogPost.length &&
           allBlogPost.map((item, index) => {
             return (
-              <div>
-                <img src={item.image.file.url} alt={item.image.title} />
-                <span><Link to={`/blog/${item.pageUrl}`}>{item.title}</Link></span>
-                <span><UserOutlined /> {item.createdBy} <CalendarOutlined /> {getFormatedDate(item.createdAt)}</span>
-                <span style={{ 
-                  textOverflow: 'ellipsis',
-                  whiteSpace: 'nowrap',
-                  display: 'block',
-                  overflow: 'hidden',
-                  width: '500px'
-                }}>{getBlogDescription(item.description)}</span>
+          <Col span={8} >
+            <div className="home-blog-item-inner">
+              <div className="home-blog-img banner-hover">
+              <Link to={`/blog/${item.pageUrl}`}>
+              <img src={item.image.file.url} alt={item.image.title} />
+              </Link>
               </div>
-            );
+              <div className="home-blog-detail">
+                <div className="home-blog-detail-inner">
+                  <h4><Link to={`/blog/${item.pageUrl}`}>{item.title}</Link></h4>
+                  <p>{getBlogDescription(item.description)}</p>
+                  <div className="blog-date display-flex justify-content-start align-item-center">
+                    <div className="author"><UserOutlined /><span>{item.createdBy}</span></div>
+                    <div className="date"><CalendarOutlined /> <span>{getFormatedDate(item.createdAt)}</span></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </Col>
+          );
           })}
+        </Row>
+        </div>
+        </div>
       </div>
     </RootElement>
   );
