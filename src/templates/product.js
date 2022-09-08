@@ -11,11 +11,12 @@ import { Breadcrumb, Layout, Rate, Collapse, Form, Button } from "antd";
 // import ProductPrices from '../components/bigcommerce/ProductPrices';
 import RootElement from '../components/base-layout';
 import AddToCartForm from '../modules/addToCart';
-import { getProductList } from '../service';
+import { getProductList, addProductToCart, createCart } from '../service';
 import ProductCard from '../modules/product-card';
 import DefaultLoader from '../components/PageLoading/DefaultLoader';
 import WishListModal from '../modules/wishlist-modal';
-
+import CartConfirmationModal from '../modules/addToCart/confirmation-modal';
+import { useCookies } from "react-cookie";
 const { Content } = Layout;
 const { Panel } = Collapse;
 
@@ -23,14 +24,18 @@ function ProductDetails({
   pageContext,
   location
 }) {
+  const [cookies, setCartCookie] = useCookies(["cartId"]);
+  const hasCartIdCookie = cookies.hasOwnProperty('cartId');
   const [form] = Form.useForm();
-// console.log(location)
   const [product, setProduct] = useState({});
   const [showModal, setShowModal] = useState(false);
   const [loading, setLoading] = useState(true);
   const [selectedImage, updateSelectedImage] = useState();
   const [selectedVideo, setSelectedVideo] = useState();
   const [relatedProducts, setRelatedProducts] = useState([]);
+  const [addToCartLoading, setAddtoCartLoadding] = useState(false);
+  const [showCartConfirmation, setCartConfirmation] = useState(false);
+  const [cartDetails, setCartDetails] = useState(null);
 
   const addProductToWishList = () => {
     const user = localStorage.getItem('loggedUserBc');
@@ -43,6 +48,38 @@ function ProductDetails({
 
   const closeModal = () => {
     setShowModal(false);
+  }
+
+  const onAddToCart = async (value) => {
+    try {
+      setAddtoCartLoadding(true);
+      const data = {
+        line_items: [
+          { quantity: value.quantity || product.order_quantity_minimum || 1, product_id: pageContext.productId }
+        ]
+      }
+      const cartId = localStorage.getItem("cartId");
+      if(cartId && cartId !== 'null') {
+        const response = await addProductToCart(data, cartId);
+        setCartDetails(response.data);
+      } else {
+        const response = await createCart(data);
+        // setCartCookie('cartId',response.data.id, { path: '/', expires: new Date(new Date().setFullYear(new Date().getFullYear() + 1)).toISOString()});
+        localStorage.setItem("cartId", response.data.id);
+        console.log(response)
+        setCartDetails(response.data);
+      }
+      setAddtoCartLoadding(false);
+      setCartConfirmation(true);
+    } catch(e) {
+      setAddtoCartLoadding(false);
+      console.log(e)
+    }
+  }
+
+  const onCartConfirmationClose = () => {
+    setCartDetails(null);
+    setCartConfirmation(false);
   }
   useEffect(()=> {
     (async () => {
@@ -136,7 +173,7 @@ function ProductDetails({
                     display: 'flex',
                     cursor: 'pointer',
                   }}>
-                  {product.images && product.images.length &&
+                  {product.images && product.images.length ?
                     product.images.map(img => (
                       <img
                         height="100px"
@@ -147,7 +184,7 @@ function ProductDetails({
                         onMouseEnter={() => updateSelectedImage(img.url_standard)}
                         onClick={() => updateSelectedImage(img.url_standard)}
                       />
-                    ))}
+                    )) : null }
                 </div>
               </div>
 
@@ -181,7 +218,9 @@ function ProductDetails({
             </section>
             <section className='product-details add-to-cart'>
               <div>
-                <AddToCartForm form={form} fields={field} />
+                {console.log(product) }
+                {product && !product.inventory_level ? <span>Out of stock</span> : null }
+                <AddToCartForm buttonLoading={addToCartLoading} form={form} fields={field} onSubmit={onAddToCart} outOfStock={product && !product.inventory_level} minQuantity={product.order_quantity_minimum} maxQuantity={product.order_quantity_maximum} inventory={product.inventory_level} />
                 <Button onClick={addProductToWishList}><HeartOutlined /></Button>
               </div>
             </section>
@@ -266,7 +305,8 @@ function ProductDetails({
               }
             </div>
           </div>}
-          {showModal && <WishListModal isModalOpen={showModal} onClose={closeModal} productId={pageContext.productId}/> }
+          {showModal ? <WishListModal isModalOpen={showModal} onClose={closeModal} productId={pageContext.productId}/> : null }
+          {showCartConfirmation ? <CartConfirmationModal productId={pageContext.productId} isModalOpen={showCartConfirmation} cartDetails={cartDetails} onClose={onCartConfirmationClose} /> : null}
         </div>
       </Content>
     </RootElement>

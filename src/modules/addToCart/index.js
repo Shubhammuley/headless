@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from "prop-types";
-import { Button, Form } from 'antd';
+import { Button, Form, InputNumber } from 'antd';
 import { RenderRadio, RenderSelect, RenderRadioButton } from './radio';
 
 
@@ -22,25 +22,37 @@ const RenderFormField = ({ field, index, initalValues }) => {
         fields,
         initalValues,
         form,
+        onSubmit,
+        outOfStock,
+        minQuantity,
+        maxQuantity,
+        inventory,
+        buttonLoading,
     } = props;
+    console.log(inventory)
+    const maxQnt = maxQuantity > inventory ? maxQuantity : inventory;
+    console.log(maxQnt)
     return (
         <Form
             form={form}
-            initalValues={initalValues}
-            onFinish={(value) => {console.log(value)}}
+            initalValues={{ ...initalValues, quantity: 1 }}
+            onFinish={onSubmit}
         >
           {
-            fields && fields.length && fields.map((field, index) => (
+            fields && fields.length ? fields.map((field, index) => (
               <RenderFormField 
                 key={index}
                 initalValues={initalValues}
                 field={{ ...field }}
                 index={index}
               /> 
-            ))
+            )) : null
           }
+          <Form.Item name="quantity">
+          <InputNumber min={minQuantity > 0 ? minQuantity : 1} max={maxQnt ||  10000} defaultValue={minQuantity || 1}/>
+        </Form.Item>
           <Form.Item>
-            <Button htmlType='submit'>Add to cart</Button>
+            <Button htmlType='submit' disabled={outOfStock} loading={buttonLoading}>Add to cart</Button>
           </Form.Item>
         </Form>
     )

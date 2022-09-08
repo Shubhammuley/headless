@@ -1,6 +1,6 @@
 import { Button } from 'antd';
 import React, { useState } from 'react';
-import { getCountries } from '../service/big-commerce';
+import { addProductToCart } from '../service';
 import Modal from 'react-modal';
 
 function Demo() {
@@ -30,7 +30,7 @@ function Demo() {
   };
   return (
     <div>
-        <Button onClick={getCountries}>Click me to call big commerce api</Button>  
+        <Button onClick={() => addProductToCart({}, 456)}>Click me to call big commerce api</Button>  
         <Button type="primary" onClick={showModal}>
         Open Modal
       </Button>

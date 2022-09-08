@@ -128,3 +128,37 @@ export const addProductToWishList = async (data) => {
       });
     return result;
 }
+
+export const addProductToCart = async (data, cartId) => {
+  const config = {
+      method: "post",
+      url: `${environmentConfig.apiUrl.addToCart}?cartId=${cartId}`,
+      data
+    };
+    const result = await axios(config)
+      .then(function(response) {
+        return response.data;
+      })
+      .catch(function(error) {
+        // console.log(error.message);
+        throw Error(error.message);
+      });
+    return result;
+}
+
+export const createCart = async (data) => {
+  const config = {
+      method: "post",
+      url: `${environmentConfig.apiUrl.createCart}`,
+      data
+    };
+    const result = await axios(config)
+      .then(function(response) {
+        return response.data;
+      })
+      .catch(function(error) {
+        // console.log(error.message);
+        throw Error(error.message);
+      });
+    return result;
+}
