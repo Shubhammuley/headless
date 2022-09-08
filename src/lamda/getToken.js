@@ -1,13 +1,13 @@
 import axios from "axios";
 
-export default async function handler(req, res) {
+export async function handler(req, res) {
     const storeUrl = "https://api.bigcommerce.com/stores/qjmdzrcw";
     const apiToken = "lukvrlbivyj2c3i0ghiel647g1tv60l";
     const data = JSON.stringify({
-        channel_id: 1,
-        expires_at: 1725183309,
-        allowed_cors_origins: ["http://localhost:8000"],
-    });
+      channel_id: 1,
+      expires_at: 1725183309,
+      allowed_cors_origins: ["http://localhost:8000"],
+  });
 
     const config = {
         method: "post",
@@ -25,11 +25,18 @@ export default async function handler(req, res) {
     };
 
     const result = await axios(config)
-        .then(function (response) {
-            return response.data;
-        })
-        .catch(function (error) {
-            console.log(error);
-        });
-    res.send(result);
+    .then(function (response) {
+      return {
+        statusCode: 200,
+        body: JSON.stringify({ ...response.data })
+      };
+    })
+    .catch(function (error) {
+      console.log(error);
+      return {
+        statusCode: 500,
+        body: JSON.stringify({ error })
+      }
+    });
+  return result;
 }

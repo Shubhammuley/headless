@@ -1,28 +1,34 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { graphql, Link } from 'gatsby';
+import { Link, navigate } from 'gatsby';
 import {
   ReadOutlined,
   SafetyOutlined,
-  PlaySquareOutlined
+  PlaySquareOutlined,
+  HeartOutlined,
 } from '@ant-design/icons';
-import { Breadcrumb, Layout, Rate, Collapse, Form } from "antd";
+import { Breadcrumb, Layout, Rate, Collapse, Form, Row, Col } from "antd";
 // import AddToCartButton from '../components/bigcommerce/AddToCartButton';
 // import ProductPrices from '../components/bigcommerce/ProductPrices';
 import RootElement from '../components/base-layout';
 import AddToCartForm from '../modules/addToCart';
-import { getProductList } from '../service';
+import { getProductList, addProductToCart, createCart } from '../service';
 import ProductCard from '../modules/product-card';
 import DefaultLoader from '../components/PageLoading/DefaultLoader';
-
+import WishListModal from '../modules/wishlist-modal';
+import CartConfirmationModal from '../modules/addToCart/confirmation-modal';
+import { useCookies } from "react-cookie";
 const { Content } = Layout;
 const { Panel } = Collapse;
 
 function ProductDetails({
-  pageContext
+  pageContext,
+  location
 }) {
+  const [cookies, setCartCookie] = useCookies(["cartId"]);
+  const hasCartIdCookie = cookies.hasOwnProperty('cartId');
   const [form] = Form.useForm();
-
   const [product, setProduct] = useState({});
+  const [showModal, setShowModal] = useState(false);
   const [loading, setLoading] = useState(true);
   const [selectedImage, updateSelectedImage] = useState();
   const [selectedVideo, setSelectedVideo] = useState();
@@ -43,27 +49,25 @@ function ProductDetails({
     })();
   }, [pageContext]);
 
-  const {
-    images,
-    name,
-    custom_url,
-    page_title,
-    price,
-    reviews_rating_sum,
-    upc,
-    sku,
-    is_free_shipping,
-    fixed_cost_shipping_price,
-    weight,
-    options,
-    description,
-    warranty,
-    videos,
-    related_products,
-  } = product;
-
-
-
+  
+  // const {
+  //   images,
+  //   name,
+  //   custom_url,
+  //   page_title,
+  //   price,
+  //   reviews_rating_sum,
+  //   upc,
+  //   sku,
+  //   is_free_shipping,
+  //   fixed_cost_shipping_price,
+  //   weight,
+  //   options,
+  //   description,
+  //   warranty,
+  //   videos,
+  //   related_products,
+  // } = product;
 
 
   const field = useMemo(() => {
@@ -93,10 +97,11 @@ function ProductDetails({
     });
   }, [product])
 
-console.log(product)
   return (
+  <>
     <RootElement>
       <Content>
+      <div className='container'>
         <Breadcrumb>
           <Breadcrumb.Item>
             <Link to={`/`}>Home</Link>
@@ -106,26 +111,30 @@ console.log(product)
           </Breadcrumb.Item>
         </Breadcrumb>
         <div className='site-content'>
+        
           { loading ? <div>
             <DefaultLoader />
           </div> : <div>
-            <section className='product-images'>
-              <div className="bc-product__gallery">
-                <img
+            <div className='productView'>
+            <section className='product-images productView-images'>
+              <div className='productView-image-main'>
+                <figure className='productView-image'>
+                  <div className='productView-img-container bc-product__gallery'>
+                  <img
                   src={
                     (selectedImage && selectedImage)
                   }
                   alt="Main"
                   style={{ objectFit: 'contain' }}
                 />
-                <div
-                  style={{
-                    display: 'flex',
-                    cursor: 'pointer',
-                  }}>
-                  {product.images && product.images.length &&
+                  </div>
+                </figure>
+              </div>
+              <ul className='productView-thumbnails '>
+              {product.images && product.images.length &&
                     product.images.map(img => (
-                      <img
+                <li>
+                  <img
                         height="100px"
                         width="100px"
                         src={img.url_thumbnail}
@@ -134,31 +143,30 @@ console.log(product)
                         onMouseEnter={() => updateSelectedImage(img.url_standard)}
                         onClick={() => updateSelectedImage(img.url_standard)}
                       />
-                    ))}
-                </div>
-              </div>
-
-            </section>
-            <section className='product-details'>
-              <div>
-                <h1 className='product-title'>{product.page_title || product.name}</h1>
-                <div className='price-block'>
-                  <div className='price-left'>
-                    <div><span>{product.price && product.price.toLocaleString("en-US", {
+                </li>
+                ))}
+              </ul>
+             </section>
+             <section className='product-details productView-details'>
+              <div className='productView-product'>
+                <h1 className='product-title productView-title'>{product.page_title || product.name}</h1>
+                <Row className='price-block' justify="space-between">
+                  <Col className='price-left productView-price'>
+                    <div className='price-section'><span className='price'>{product.price && product.price.toLocaleString("en-US", {
                       style: "currency",
                       currency: "USD",
                       minimumFractionDigits: 0,
                     })}</span></div>
-                  </div>
-                  <div className='product-rating'>
+                  </Col>
+                  <Col className='product-rating'>
                     <Rate value={product.reviews_rating_sum} allowHalf disabled />({product.reviews_rating_sum})
-                  </div>
-                </div>
-                <ul>
-                  <li><span>SKU: </span><span>{product.sku}</span></li>
-                  {product.upc ? <li><span>UPC: </span><span>{product.upc}</span></li> : null}
-                  <li><span>Weight: </span><span>{product.weight}</span></li>
-                  <li><span>Shipping: </span><span>{product.is_free_shipping ? 'Free Shipping' : product.fixed_cost_shipping_price && product.fixed_cost_shipping_price.toLocaleString("en-US", {
+                  </Col>
+                </Row>
+                <ul className='productView-info'>
+                  <li><span className='productView-info-name sku-label'>SKU: </span><span className='productView-info-value'>{product.sku}</span></li>
+                  {product.upc ? <li><span className='productView-info-name'>UPC: </span><span className='productView-info-value'>{product.upc}</span></li> : null}
+                  <li><span className='productView-info-name'>Weight: </span><span className='productView-info-value'>{product.weight}</span></li>
+                  <li><span className='productView-info-name'>Shipping: </span><span className='productView-info-value'>{product.is_free_shipping ? 'Free Shipping' : product.fixed_cost_shipping_price && product.fixed_cost_shipping_price.toLocaleString("en-US", {
                     style: "currency",
                     currency: "USD",
                     minimumFractionDigits: 0,
@@ -166,13 +174,15 @@ console.log(product)
                 </ul>
               </div>
             </section>
-            <section className='product-details add-to-cart'>
+            <section className='product-details productView-details add-to-cart'>
               <div>
-                <AddToCartForm form={form} fields={field} />
+                {console.log(product) }
+                {product && !product.inventory_level ? <span>Out of stock</span> : null }
+                <AddToCartForm buttonLoading={addToCartLoading} form={form} fields={field} onSubmit={onAddToCart} outOfStock={product && !product.inventory_level} minQuantity={product.order_quantity_minimum} maxQuantity={product.order_quantity_maximum} inventory={product.inventory_level} />
+                <Button onClick={addProductToWishList}><HeartOutlined /></Button>
               </div>
             </section>
-
-            <div className='product-details'>
+            <div className='product-details productView-description'>
               <Collapse defaultActiveKey={['1']} expandIconPosition="end">
                 <Panel header={<><ReadOutlined /> Product Description</>} key="1">
                   <p>{product.description}</p>
@@ -234,6 +244,10 @@ console.log(product)
               </Collapse>
 
             </div>
+            </div>
+            
+
+            
             <div className='related-products'>
               {
                 relatedProducts && relatedProducts.length ? (<>
@@ -252,10 +266,13 @@ console.log(product)
               }
             </div>
           </div>}
-
+          {showModal ? <WishListModal isModalOpen={showModal} onClose={closeModal} productId={pageContext.productId}/> : null }
+          {showCartConfirmation ? <CartConfirmationModal productId={pageContext.productId} isModalOpen={showCartConfirmation} cartDetails={cartDetails} onClose={onCartConfirmationClose} /> : null}
+        </div>
         </div>
       </Content>
     </RootElement>
+    </>
   );
 };
 

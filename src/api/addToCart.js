@@ -3,26 +3,33 @@ import axios from "axios";
 export default async function handler(req, res) {
     const storeUrl = "https://api.bigcommerce.com/stores/qjmdzrcw";
     const apiToken = "lukvrlbivyj2c3i0ghiel647g1tv60l";
-    const data = JSON.stringify({
-        operationName: "Login",
-        variables: {
-            email: req.body.email,
-            pass: req.body.password,
-        },
-        query:
-            "mutation Login($email: String!, $pass: String!) {\n  login(email: $email, password: $pass) {\n    result\n    customer {\n      company\n      lastName\n      firstName\n      entityId\n      email\n      taxExemptCategory\n    }\n  }\n}\n",
-    });
 
+    const data = JSON.stringify({
+        ...req.body,
+        channel_id: 1,
+    });
+    const parseCookie = (str) => {
+        const obj = {};
+        str.split(";").map((item) => {
+          obj[item.split("=")[0]] = item.split("=")[1];
+        });
+        return obj;
+      };
+      const cookies = parseCookie(req.headers.cookie || "");
+
+    //   if(!cookies || !cookies.cartId) {
+        //   res.status(500).json({ message:  "Cart not found "});
+    //   }
     const config = {
         method: "post",
         withCredentials: false,
         mode: "no-cors",
-        url: "https://new-theme-5.mybigcommerce.com/graphql",
+        url: `${storeUrl}/v3/carts/${req.query.cartId}/items`,
         headers: {
             "sec-ch-ua":
                 '"Chromium";v="104", " Not A;Brand";v="99", "Google Chrome";v="104"',
             Referer: "http://localhost:8000/",
-            authorization: `Bearer ${req.body.token}`,
+            "X-Auth-Token": apiToken,
             "Access-Control-Allow-Origin": "*",
             "Content-Type": "application/json",
             "sec-ch-ua-mobile": "?0",
@@ -38,7 +45,7 @@ export default async function handler(req, res) {
         .then(function (response) {
             res.header(response.headers);
             console.log(response.data)
-            return { data: response.data.data.login, tokens: response.headers };
+            return { ...response.data };
         })
         .catch(function (error) {
           res.status(500).json({ message:  error.response.data});

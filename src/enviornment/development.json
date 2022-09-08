@@ -1,0 +1,32 @@
+{
+  "gatsby_url": {
+    "getCountries": "/api/countries",
+    "signUp": "/api/signUp",
+    "login": "/api/login",
+    "getToken": "/api/getToken",
+    "getProduct": "/api/productList",
+    "getState" : "/api/states",
+    "createWishList": "/api/createWishList",
+    "getAllWishLists" : "/api/getAllWishList",
+    "addWishListItem": "/api/addWishListItem",
+    "addToCart": "/api/addToCart",
+    "createCart": "/api/createCart",
+    "removeCartItem": "/api/removeCartItem",
+    "updateCartItem": "/api/updateCartItem"
+  },
+  "netlify_lambda": {
+    "getCountries": "/.netlify/functions/countries",
+    "signUp": "/.netlify/functions/signUp",
+    "login": "/.netlify/functions/login",
+    "getToken": "/.netlify/functions/getToken",
+    "getProduct": "/.netlify/functions/productList",
+    "getState" : "/.netlify/functions/states",
+    "createWishList": "/.netlify/functions/createWishList",
+    "getAllWishLists" : "/.netlify/functions/getAllWishList",
+    "addWishListItem": "/.netlify/functions/addWishListItem",
+    "addToCart": "/.netlify/functions/addToCart",
+    "createCart": "/.netlify/functions/createCart",
+    "removeCartItem": "/.netlify/functions/removeCartItem",
+    "updateCartItem": "/.netlify/functions/updateCartItem"
+  }
+}

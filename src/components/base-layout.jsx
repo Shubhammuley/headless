@@ -4,6 +4,7 @@ import useTopNavigation from "../hooks/use-top-navigation";
 import useBottomNavigation from "../hooks/use-bottom-navigation";
 import { Menu, message, Input, Col, Row,Form,Button } from "antd";
 import "./base-component.css";
+import 'antd/dist/antd.css';
 import "../assets/scss/theme.scss";
 import { getProductList } from "../service";
 import image from "../logo/logo.webp";
@@ -19,7 +20,6 @@ import {
   CloseOutlined,
 } from "@ant-design/icons";
 import { useCookies } from "react-cookie";
-
 // const { Sider } = Layout;
 
 const openNotification = (type, messageText) => {
@@ -40,6 +40,7 @@ const RootElement = ({ children }) => {
   const [userDetails, setUserDetails] = useState(null);
   const [productList, setProductList] = useState([]);
   const [noProductFoundError, SetNotProductFoundError] = useState(false);
+  // const [showSubNav, setShowSubNav] = useState('');
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -47,8 +48,6 @@ const RootElement = ({ children }) => {
     }
     const user = localStorage && localStorage.getItem("loggedUserBc");
     if (user) {
-      console.log(cookies);
-      console.log(user);
       setUserDetails(JSON.parse(user));
     }
   }, [cookies, typeof window]);
@@ -71,7 +70,7 @@ const RootElement = ({ children }) => {
     SetNotProductFoundError(false);
     setProductList([]);
   };
-  
+
 
   const onSearch = (e) => {
     onCloseSearch();
@@ -126,125 +125,159 @@ const RootElement = ({ children }) => {
     <Fragment>
       <div class="fixed-header header">
         <div class="container" >
-        <Row align="middle">
-          <Col className="gutter-row" span={6}>
-            <div className="header-left">
-            <div class="desktop_mobile_menu">
-              <a class="trigger" href="javascript:void(0);" onClick={handleToggle}>
-                <span class="otherlinks-line-1"></span>
-                <span class="otherlinks-line-2"></span>
-                <span class="otherlinks-line-3"></span>
-                <span class="otherlinks-line-4"></span>
-              </a>
-            </div>
-              <Link to={"/"}>
-                <img src={image} />
-              </Link>
-            </div>
-          </Col>
-          <Col className="gutter-row header-center" span={12}>
-          <nav>
-            <ul id="nav">
-              
-              {showSearch ? (
-                <>
-                  <div>
-                    <Input
-                      placeholder="Search the store"
-                      onChange={searchOnChange}
-                      onPressEnter={onSearch}
-                    />
-                    <span onClick={onCloseSearch}>
-                      <CloseOutlined />
-                    </span>
-                    {productList && productList.length ? (
-                      <div className="search-product-list">
-                        <ul>
-                          {productList.map((item) => {
-                            return (
-                              <li>
-                                <div>
-                                  <div>
-                                    <Link
-                                      to={`/products${item.custom_url.url}`}
-                                    >
-                                      <img
-                                        src="https://www.junglescout.com/wp-content/uploads/2021/01/product-photo-water-bottle-hero.png"
-                                        width="66"
-                                        alt={item.name}
-                                        height="66"
-                                      />
-                                    </Link>
-                                  </div>
-                                  <div>
-                                    <p>
-                                      <Link
-                                        to={`/products${item.custom_url.url}`}
-                                      >
-                                        {item.name}
-                                      </Link>
-                                    </p>
-                                    <p>
-                                      {item.price.toLocaleString(
-                                        "en-US",
-                                        {
-                                          style: "currency",
-                                          currency: "USD",
-                                          minimumFractionDigits: 0,
-                                        }
-                                      )}
-                                    </p>
-                                  </div>
-                                </div>
-                              </li>
-                            );
-                          })}
-                        </ul>
-                      </div>
-                    ) : <>
-                      {
-                        noProductFoundError ? <span>0 product results for '{searchText}'</span> : null
-                      }
-                    </>}
-                  </div>
-                </>
-              ) : (
-                <>
-                  {topNavigation.map((item, index) => {
-                    const { pageUrl, title, sublink } = item;
-                    return (
-                      <li>
-                        <Link to={`/${pageUrl}`}>
-                          {title}{" "}
-                          {sublink && sublink.length && <DownOutlined />}
-                        </Link>
-                        {sublink && sublink.length ? (
-                          <ul>
-                            {sublink.map((link) => {
-                              return (
-                                <li>
-                                  <Link to={`/${link.pageUrl}`}>
-                                    {link.title}
-                                  </Link>
-                                </li>
-                              );
-                            })}
-                          </ul>
-                        ) : null}
-                      </li>
-                    );
-                  })}
-                  {userDetails ? (
+          <Row align="middle">
+            <Col className="gutter-row" span={6}>
+              <div className="header-left">
+                <div class="desktop_mobile_menu">
+                  <a class="trigger" href="javascript:void(0);" onClick={handleToggle}>
+                    <span class="otherlinks-line-1"></span>
+                    <span class="otherlinks-line-2"></span>
+                    <span class="otherlinks-line-3"></span>
+                    <span class="otherlinks-line-4"></span>
+                  </a>
+                </div>
+                <Link to={"/"}>
+                  <img src={image} />
+                </Link>
+              </div>
+            </Col>
+            <Col className="gutter-row header-center" span={12}>
+              <nav>
+                <ul id="nav">
+
+                  {showSearch ? (
                     <>
-                      <span>Hey, {userDetails.firstName} </span>{" "}
-                      <span onClick={onLogout}>Logout</span>
+                      <div>
+                        <Input
+                          placeholder="Search the store"
+                          onChange={searchOnChange}
+                          onPressEnter={onSearch}
+                        />
+                        <span onClick={onCloseSearch}>
+                          <CloseOutlined />
+                        </span>
+                        {productList && productList.length ? (
+                          <div className="search-product-list">
+                            <ul>
+                              {productList.map((item) => {
+                                return (
+                                  <li>
+                                    <div>
+                                      <div>
+                                        <Link
+                                          to={`/products${item.custom_url.url}`}
+                                        >
+                                          <img
+                                            src="https://www.junglescout.com/wp-content/uploads/2021/01/product-photo-water-bottle-hero.png"
+                                            width="66"
+                                            alt={item.name}
+                                            height="66"
+                                          />
+                                        </Link>
+                                      </div>
+                                      <div>
+                                        <p>
+                                          <Link
+                                            to={`/products${item.custom_url.url}`}
+                                          >
+                                            {item.name}
+                                          </Link>
+                                        </p>
+                                        <p>
+                                          {item.price.toLocaleString(
+                                            "en-US",
+                                            {
+                                              style: "currency",
+                                              currency: "USD",
+                                              minimumFractionDigits: 0,
+                                            }
+                                          )}
+                                        </p>
+                                      </div>
+                                    </div>
+                                  </li>
+                                );
+                              })}
+                            </ul>
+                          </div>
+                        ) : <>
+                          {
+                            noProductFoundError ? <span>0 product results for '{searchText}'</span> : null
+                          }
+                        </>}
+                      </div>
                     </>
                   ) : (
-                    <li>
-                      {/* <Button onClick={onLogin}>Login</Button> */}
-                      <Link to={"/login"}>Login</Link>
-                    </li>
-                  )}
+                    <>
+                      <Menu mode="horizontal">
+                        {topNavigation.map((item, index) => {
+                          const { pageUrl, title, sublink } = item;
+                          if (sublink && sublink.length) {
+                            return (
+                              <Menu.SubMenu key={`${title}-${index}`} title={<><Link to={`/${pageUrl}`}>
+                                {title}{" "}
+                                {sublink && sublink.length && <DownOutlined />}
+                              </Link></>} >
+                                {sublink && sublink.length ? (
+                                  <>
+                                    {sublink.map((link, indexSub) => {
+                                      return (
+                                        <Menu.Item key={`${link.title}-${index}-${indexSub}`}>
+                                          <Link to={`/${link.pageUrl}`}>
+                                            {link.title}
+                                          </Link>
+                                        </Menu.Item>
+                                      );
+                                    })}
+                                  </>
+                                ) : null}
+                              </Menu.SubMenu>
+                            )
+                          } else {
+                            return (
+                              <Menu.Item key={`${title}-${index}`}>
+                                <Link to={`/${pageUrl}`}>
+                                  {title}{" "}
+                                </Link>
+                              </Menu.Item>
+                            )
+                          }
+                          // return (
+                          //   <li>
+                          //     <div onMouseEnter={() => setShowSubNav(`${title}-${index}`)} onMouseLeave={() => setShowSubNav('')}>
+                          //       <Link to={`/${pageUrl}`}>
+                          //         {title}{" "}
+                          //         {sublink && sublink.length && <DownOutlined />}
+                          //       </Link>
+                          //       {sublink && sublink.length && showSubNav === `${title}-${index}` ? (
+                          //         <ul>
+                          //           {sublink.map((link) => {
+                          //             return (
+                          //               <li>
+                          //                 <Link to={`/${link.pageUrl}`}>
+                          //                   {link.title}
+                          //                 </Link>
+                          //               </li>
+                          //             );
+                          //           })}
+                          //         </ul>
+                          //       ) : null}
+                          //     </div>
+                          //   </li>
+                          // );
+                        })}
+                      </Menu>
+                      {userDetails ? (
+                        <>
+                          <span>Hey, {userDetails.firstName} </span>{" "}
+                          <span onClick={onLogout}>Logout</span>
+                        </>
+                      ) : (
+                        <li>
+                          {/* <Button onClick={onLogin}>Login</Button> */}
+                          <Link to={"/login"}>Login</Link>
+                        </li>
+                      )}
                   <span onClick={() => setShowSearch(true)}>
                     <SearchOutlined />
                   </span>
@@ -272,6 +305,7 @@ const RootElement = ({ children }) => {
           </div>
           <div onClick={()=> setCollapsed(true)}>
           {children}
+          </div>
           <footer className="footer">
               <div className="footer-info-inn">
                 <div className="container">

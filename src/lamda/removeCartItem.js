@@ -1,29 +1,33 @@
 import axios from "axios";
 
-export default async function handler(req, res) {
+export async function handler(req, res) {
     const storeUrl = "https://api.bigcommerce.com/stores/qjmdzrcw";
     const apiToken = "lukvrlbivyj2c3i0ghiel647g1tv60l";
-    const data = JSON.stringify({
-        operationName: "Login",
-        variables: {
-            email: req.body.email,
-            pass: req.body.password,
-        },
-        query:
-            "mutation Login($email: String!, $pass: String!) {\n  login(email: $email, password: $pass) {\n    result\n    customer {\n      company\n      lastName\n      firstName\n      entityId\n      email\n      taxExemptCategory\n    }\n  }\n}\n",
-    });
+
+    const parseCookie = (str) => {
+        const obj = {};
+        str.split(";").map((item) => {
+            obj[item.split("=")[0]] = item.split("=")[1];
+        });
+        return obj;
+    };
+    // const cookies = parseCookie(req.headers.cookie || "");
+
+    // if (!cookies || !cookies.cartId) {
+    //     res.status(500).json({ message: "Cart not found " });
+    // }
 
     const config = {
-        method: "post",
+        method: "DELETE",
         withCredentials: false,
         mode: "no-cors",
-        url: "https://new-theme-5.mybigcommerce.com/graphql",
+        url: `${storeUrl}/v3/carts/${req.queryStringParameters.cartId}/items/${req.query.itemId}`,
         headers: {
             "sec-ch-ua":
                 '"Chromium";v="104", " Not A;Brand";v="99", "Google Chrome";v="104"',
             Referer: "http://localhost:8000/",
-            authorization: `Bearer ${req.body.token}`,
             "Access-Control-Allow-Origin": "*",
+            "X-Auth-Token": apiToken,
             "Content-Type": "application/json",
             "sec-ch-ua-mobile": "?0",
             "Access-Control-Allow-Methods": "GET, PUT, POST, DELETE, OPTIONS",
@@ -31,18 +35,22 @@ export default async function handler(req, res) {
                 "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36",
             "sec-ch-ua-platform": '"Linux"',
         },
-        data: data,
     };
 
     const result = await axios(config)
         .then(function (response) {
-            res.header(response.headers);
+            // res.header(response.headers);
             console.log(response.data)
-            return { data: response.data.data.login, tokens: response.headers };
+            return { statusCode: 200, body: JSON.stringify({ ...response.data }) };
         })
         .catch(function (error) {
-          res.status(500).json({ message:  error.response.data});
+            return {
+                statusCode: 500,
+                body: { message: JSON.stringify(error.response.data) }
+            }
+        //   res.status(500).json({ message:  error.response.data});
         });
     // res.cookie
-    res.send(result);
+    // res.send(result);
+    return result;
 }

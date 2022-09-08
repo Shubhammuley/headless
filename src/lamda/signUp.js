@@ -1,6 +1,6 @@
 import axios from "axios";
 
-export default async function handler(req, res) {
+export async function handler(req, res) {
     const storeUrl = "https://api.bigcommerce.com/stores/qjmdzrcw";
     const apiToken = "lukvrlbivyj2c3i0ghiel647g1tv60l";
 
@@ -17,7 +17,7 @@ export default async function handler(req, res) {
         state,
         zipCode,
         phone,
-      } = req.body;
+      } = JSON.parse(req.body);
       const data = JSON.stringify([
         {
           email,
@@ -58,12 +58,18 @@ export default async function handler(req, res) {
       };
   
       const result = await axios(config)
-        .then(function (response) {
-          return response.data;
-        })
-        .catch(function (error) {
-          console.log(error.response.data);
-          res.status(500).json({ message:  error.response.data});
-        });
-      res.send(result);
+      .then(function (response) {
+        return {
+          statusCode: 200,
+          body: JSON.stringify({ ...response.data })
+        };
+      })
+      .catch(function (error) {
+        console.log(error);
+        return {
+          statusCode: 500,
+          body: JSON.stringify({ error })
+        }
+      });
+    return result;
 }
