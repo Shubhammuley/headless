@@ -21,8 +21,8 @@ const { Content } = Layout;
 const { Panel } = Collapse;
 
 function ProductDetails({
-  pageContext,
-  location
+  location,
+  productId
 }) {
   const [cookies, setCartCookie] = useCookies(["cartId"]);
   const hasCartIdCookie = cookies.hasOwnProperty('cartId');
@@ -55,7 +55,7 @@ function ProductDetails({
       setAddtoCartLoadding(true);
       const data = {
         line_items: [
-          { quantity: value.quantity || product.order_quantity_minimum || 1, product_id: pageContext.productId }
+          { quantity: value.quantity || product.order_quantity_minimum || 1, product_id: productId }
         ]
       }
       const cartId = localStorage.getItem("cartId");
@@ -83,7 +83,7 @@ function ProductDetails({
   }
   useEffect(()=> {
     (async () => {
-      const result = await getProductList({ id: pageContext.productId })
+      const result = await getProductList({ id: productId })
       if(result && result.data && result.data.length) {
         const productDetail = result.data[0];
         setProduct(productDetail);
@@ -94,7 +94,7 @@ function ProductDetails({
       }
       setLoading(false);
     })();
-  }, [pageContext]);
+  }, [productId]);
 
   
   // const {
@@ -305,8 +305,8 @@ function ProductDetails({
               }
             </div>
           </div>}
-          {showModal ? <WishListModal isModalOpen={showModal} onClose={closeModal} productId={pageContext.productId}/> : null }
-          {showCartConfirmation ? <CartConfirmationModal productId={pageContext.productId} isModalOpen={showCartConfirmation} cartDetails={cartDetails} onClose={onCartConfirmationClose} /> : null}
+          {showModal ? <WishListModal isModalOpen={showModal} onClose={closeModal} productId={productId}/> : null }
+          {showCartConfirmation ? <CartConfirmationModal productId={productId} isModalOpen={showCartConfirmation} cartDetails={cartDetails} onClose={onCartConfirmationClose} /> : null}
         </div>
       </Content>
     </RootElement>

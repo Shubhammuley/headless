@@ -12,7 +12,8 @@
     "addToCart": "/api/addToCart",
     "createCart": "/api/createCart",
     "removeCartItem": "/api/removeCartItem",
-    "updateCartItem": "/api/updateCartItem"
+    "updateCartItem": "/api/updateCartItem",
+    "getCategories": "/api/getCategories"
   },
   "netlify_lambda": {
     "getCountries": "/.netlify/functions/countries",
@@ -27,6 +28,7 @@
     "addToCart": "/.netlify/functions/addToCart",
     "createCart": "/.netlify/functions/createCart",
     "removeCartItem": "/.netlify/functions/removeCartItem",
-    "updateCartItem": "/.netlify/functions/updateCartItem"
+    "updateCartItem": "/.netlify/functions/updateCartItem",
+    "getCategories": "/.netlify/functions/getCategories"
   }
 }

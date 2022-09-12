@@ -71,22 +71,22 @@ async function getAllBigcommercePrduct() {
 exports.createPages = async ({ graphql, actions }) => {
   const { createPage } = actions;
 
-  if(!products || !products.length) {
-    products = await getAllBigcommercePrduct();
-  }
-  console.log(products.length);
+  // if(!products || !products.length) {
+  //   products = await getAllBigcommercePrduct();
+  // }
+  // console.log(products.length);
 
 
-  products.forEach((item) => {
-    const { custom_url, id } = item;
-    createPage({
-      path: `/products${custom_url.url}`,
-      component: path.resolve(`src/templates/product.js`),
-      context: {
-        productId: id,
-      },
-    });
-  });
+  // products.forEach((item) => {
+  //   const { custom_url, id } = item;
+  //   createPage({
+  //     path: `/products${custom_url.url}`,
+  //     component: path.resolve(`src/templates/product.js`),
+  //     context: {
+  //       productId: id,
+  //     },
+  //   });
+  // });
   return new Promise((resolve, reject) => {
     resolve(
       graphql(`
@@ -186,41 +186,41 @@ exports.createPages = async ({ graphql, actions }) => {
             reject(result.errors);
           }
 
-          const categories = result.data.allBigCommerceCategories.nodes;
+          // const categories = result.data.allBigCommerceCategories.nodes;
 
           const category = [];
-          categories.map((item) => {
-            if (item && item.parent_id === 0) {
-              const subCategories = categories.filter((subCategory) => {
-                if (subCategory.parent_id === item.bigcommerce_id) {
-                  createPage({
-                    path: subCategory.custom_url.url,
-                    component: path.resolve(`src/templates/categories.js`),
-                    context: {
-                      categoryId: subCategory.bigcommerce_id,
-                      description: subCategory.description,
-                      category: subCategory,
-                      parentCategory: item,
-                      categories,
-                    },
-                  });
-                  return subCategory;
-                }
-              });
-              category.push({ ...item, subCategories });
-              createPage({
-                path: item.custom_url.url,
-                component: path.resolve(`src/templates/categories.js`),
-                context: {
-                  categoryId: item.bigcommerce_id,
-                  description: item.description,
-                  category: { ...item, subCategories },
-                  subCategories,
-                  categories
-                },
-              });
-            }
-          });
+          // categories.map((item) => {
+          //   if (item && item.parent_id === 0) {
+          //     const subCategories = categories.filter((subCategory) => {
+          //       if (subCategory.parent_id === item.bigcommerce_id) {
+          //         createPage({
+          //           path: subCategory.custom_url.url,
+          //           component: path.resolve(`src/templates/categories.js`),
+          //           context: {
+          //             categoryId: subCategory.bigcommerce_id,
+          //             description: subCategory.description,
+          //             category: subCategory,
+          //             parentCategory: item,
+          //             categories,
+          //           },
+          //         });
+          //         return subCategory;
+          //       }
+          //     });
+          //     category.push({ ...item, subCategories });
+          //     createPage({
+          //       path: item.custom_url.url,
+          //       component: path.resolve(`src/templates/categories.js`),
+          //       context: {
+          //         categoryId: item.bigcommerce_id,
+          //         description: item.description,
+          //         category: { ...item, subCategories },
+          //         subCategories,
+          //         categories
+          //       },
+          //     });
+          //   }
+          // });
 
           // category.forEach;
           // const products = result.data.allBigCommerceProducts.nodes;
@@ -501,32 +501,32 @@ exports.onCreateDevServer = ({ app }) => {
   );
 };
 
-exports.sourceNodes = async ({
-  actions,
-  createNodeId,
-  createContentDigest
-}) => {
-  const {
-    createNode
-  } = actions;
-  if(!products || !products.length) {
-    products = await getAllBigcommercePrduct();
-  }
-  const handleGenerateNodes = (node, name='bigCommerceProducts') => {
-    return { ...node,
-      id: createNodeId(node.id),
-      bigcommerce_id: node.id,
-      parent: null,
-      children: [],
-      internal: {
-        type: name,
-        content: JSON.stringify(node),
-        contentDigest: createContentDigest(node)
-      }
-    };
-  };
-  if(products) {
-    products.map((item) => createNode(handleGenerateNodes(item)))
-  }
+// exports.sourceNodes = async ({
+//   actions,
+//   createNodeId,
+//   createContentDigest
+// }) => {
+//   const {
+//     createNode
+//   } = actions;
+//   if(!products || !products.length) {
+//     products = await getAllBigcommercePrduct();
+//   }
+//   const handleGenerateNodes = (node, name='bigCommerceProducts') => {
+//     return { ...node,
+//       id: createNodeId(node.id),
+//       bigcommerce_id: node.id,
+//       parent: null,
+//       children: [],
+//       internal: {
+//         type: name,
+//         content: JSON.stringify(node),
+//         contentDigest: createContentDigest(node)
+//       }
+//     };
+//   };
+//   if(products) {
+//     products.map((item) => createNode(handleGenerateNodes(item)))
+//   }
 
-};
+// };

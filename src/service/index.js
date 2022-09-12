@@ -48,6 +48,23 @@ export const signUp = async (data) => {
     return result;
 }
 
+
+export const getCategories = async () => {
+  const config = {
+      method: "get",
+      url: environmentConfig.apiUrl.getCategories,
+    };
+    const result = await axios(config)
+      .then(function(response) {
+        return response.data;
+      })
+      .catch(function(error) {
+        // console.log(error.message);
+        throw Error(error.message);
+      });
+    return result;
+}
+
 export const getProductList = async ({ page = 1, sort= 'id', direction= 'asc', category= null, keyword, idIn, id }) => {
   let url = `${environmentConfig.apiUrl.getProduct}?page=${page}&sort=${sort}&direction=${direction}`;
   if (category) {

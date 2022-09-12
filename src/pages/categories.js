@@ -3,7 +3,8 @@ import { Link, graphql } from "gatsby";
 import { Breadcrumb, Layout } from "antd";
 import CategorySection from "../modules/category";
 import RootElement from "../components/base-layout";
-import { getProductList } from "../service";
+import { getCategories, getProductList } from "../service";
+import DefaultLoader from "../components/PageLoading/DefaultLoader";
 const { Content } = Layout;
 
 const getSortObject = (value) => {
@@ -26,14 +27,42 @@ const getSortObject = (value) => {
 
 function Categories(props) {
   const [loading, setLoding] = useState(true);
+  const [pageloading, setPageLoding] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalProduct, setTotalProduct] = useState(0);
   const [productList, setProductList] = useState([]);
+  const [categories, setCategories] = useState([]);
   const [sorting, setSorting] = useState("normal");
-  const {
-    data: { allBigCommerceCategories },
-  } = props;
+  // const {
+  //   data: { allBigCommerceCategories },
+  // } = props;
 
+  const fetchCategories = async () => {
+    try {
+      setPageLoding(true);
+      const category = [];
+      const result = await getCategories();
+      console.log(result.data);
+      result.data.map((item) => {
+        if (item && item.parent_id === 0) {
+          const subCategories = result.data.filter(
+            (subCategory) => subCategory.parent_id === item.id
+          );
+          category.push({ ...item, subCategories });
+        }
+      });
+      console.log(category)
+      setCategories(category);
+      setPageLoding(false);
+      console.log(categories);
+    } catch (e) {
+      console.log("first", e)
+    }
+  }
+  useEffect(() => {
+    fetchCategories()
+  }, []);
+  
   const getProductData = async (page, sort) => {
     try {
       setLoding(true);
@@ -61,18 +90,11 @@ function Categories(props) {
     getProductData(currentPage, sorting);
   }, [currentPage, sorting]);
 
-  const categories = useMemo(() => {
-    const category = [];
-    allBigCommerceCategories.nodes.map((item) => {
-      if (item && item.parent_id === 0) {
-        const subCategories = allBigCommerceCategories.nodes.filter(
-          (subCategory) => subCategory.parent_id === item.bigcommerce_id
-        );
-        category.push({ ...item, subCategories });
-      }
-    });
-    return category;
-  }, allBigCommerceCategories);
+  // const categories = useMemo(() => {
+  //   const category = [];
+  //   allBigCommerceCategories.nodes
+  //   return category;
+  // }, allBigCommerceCategories);
 
   return (
     <RootElement>
@@ -85,20 +107,24 @@ function Categories(props) {
             <Link to={"/categories"}>Categories</Link>
           </Breadcrumb.Item>
         </Breadcrumb>
-        <div className="site-layout-content">
-          <CategorySection
-            allCategories={categories}
-            pageTitle="Categories"
-            subCategory={categories}
-            productList={productList}
-            subCategoryTitle="Subcategories"
-            total={totalProduct}
-            page={currentPage}
-            loading={loading}
-            onPageChange={onChangePage}
-            sorting={sorting}
-            onChangeSorting={onChangeSorting}
-          />
+        <div className="site-layout-content">{
+          pageloading ? <><DefaultLoader /></> : (
+            <CategorySection
+              allCategories={categories}
+              pageTitle="Categories"
+              subCategory={categories}
+              productList={productList}
+              subCategoryTitle="Subcategories"
+              total={totalProduct}
+              page={currentPage}
+              loading={loading}
+              onPageChange={onChangePage}
+              sorting={sorting}
+              onChangeSorting={onChangeSorting}
+            />
+          )
+        }
+
         </div>
       </Content>
     </RootElement>
@@ -107,30 +133,30 @@ function Categories(props) {
 
 export default Categories;
 
-export const pageQuery = graphql`
-  query BigCommerceCategories {
-    allBigCommerceCategories {
-      nodes {
-        id
-        name
-        description
-        default_product_sort
-        parent_id
-        page_title
-        search_keywords
-        sort_order
-        views
-        is_visible
-        layout_file
-        meta_description
-        meta_keywords
-        bigcommerce_id
-        custom_url {
-          is_customized
-          url
-        }
-        image_url
-      }
-    }
-  }
-`;
+// export const pageQuery = graphql`
+//   query BigCommerceCategories {
+//     allBigCommerceCategories {
+//       nodes {
+//         id
+//         name
+//         description
+//         default_product_sort
+//         parent_id
+//         page_title
+//         search_keywords
+//         sort_order
+//         views
+//         is_visible
+//         layout_file
+//         meta_description
+//         meta_keywords
+//         bigcommerce_id
+//         custom_url {
+//           is_customized
+//           url
+//         }
+//         image_url
+//       }
+//     }
+//   }
+// `;

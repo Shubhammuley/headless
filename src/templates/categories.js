@@ -5,12 +5,13 @@ import { Breadcrumb, Layout } from "antd";
 import { makeTitle } from "../utils";
 import CategorySection from "../modules/category";
 // import useProductList from "../hooks/use-all-product-list";
-import { getProductList } from '../service';
+import { getProductList, getCategories } from '../service';
+import DefaultLoader from "../components/PageLoading/DefaultLoader";
 
 const { Content } = Layout;
 
 const getSortObject = (value) => {
-  if(value === 'date'){
+  if (value === 'date') {
     return { sort: 'date_last_imported', }
   } else if (value === 'totalSold') {
     return { sort: 'total_sold' };
@@ -21,32 +22,63 @@ const getSortObject = (value) => {
   } else if (value === 'PriceAsc') {
     return { sort: 'price' };
   } else if (value === 'PriceDesc') {
-    return { sort: 'price' , direction: 'desc' };
+    return { sort: 'price', direction: 'desc' };
   } else {
     return {};
   }
 }
 
-function Categories({ pageContext, location }) {
+function Categories({ location, categoryId }) {
   const [loading, setLoding] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalProduct, setTotalProduct] = useState(0);
   const [productList, setProductList] = useState([]);
   const [sorting, setSorting] = useState('normal');
+  const [pageloading, setPageLoding] = useState(true);
+  const [categories, setCategories] = useState([]);
+  const [category, setCategory] = useState({});
+  const [subCategories, setSubCategories] = useState([]);
 
-  // const productList = useProductList();
+  const fetchCategories = async () => {
+    try {
+      setPageLoding(true);
+      const category = [];
+      const result = await getCategories();
+      console.log(result.data);
+      result.data.map((item) => {
+        if (item && item.parent_id === 0) {
+          const subCategories = result.data.filter(
+            (subCategory) => subCategory.parent_id === item.id
+          );
+          category.push({ ...item, subCategories });
+        }
+      });
+      const categoryDetails = result.data.find((item) =>  parseInt(item.id) === categoryId);
+      const subCategoriesDetails = result.data.filter((item) => item.parent_id === categoryId);
+      console.log(categoryDetails)
+      setCategory(categoryDetails);
+      setSubCategories(subCategoriesDetails);
+      setCategories(category);
+      setPageLoding(false);
+      console.log(categories);
+    } catch (e) {
+      console.log("first", e)
+    }
+  }
+  useEffect(() => {
+    fetchCategories()
+  }, []);
 
   const getProductData = async (page, sort) => {
     try {
-      const { categoryId } = pageContext;
       setLoding(true);
       const sortObj = getSortObject(sort);
-      const result = await getProductList({ page, ...sortObj, category: categoryId  });
+      const result = await getProductList({ page, ...sortObj, category: categoryId });
       const list = result.data || [];
       setTotalProduct(result.meta.pagination.total);
       setProductList(list);
       setLoding(false);
-    }catch (e) {
+    } catch (e) {
       setLoding(false);
       console.log(e);
     }
@@ -62,22 +94,11 @@ function Categories({ pageContext, location }) {
 
   useEffect(() => {
     getProductData(currentPage, sorting);
-  }, [currentPage, sorting, pageContext]);
+  }, [currentPage, sorting, categoryId]);
 
 
-  const { subCategories, category } = pageContext;
-  const categories = useMemo(() => {
-    const category = [];
-    pageContext.categories.map((item) => {
-      if (item && item.parent_id === 0) {
-        const subCategories = pageContext.categories.filter(
-          (subCategory) => subCategory.parent_id === item.bigcommerce_id
-        );
-        category.push({ ...item, subCategories });
-      }
-    });
-    return category;
-  }, pageContext);
+  // const { subCategories } = pageContext;
+
   const breadCrumbs = location?.pathname?.split("/");
   const url = [];
   return (
@@ -100,20 +121,23 @@ function Categories({ pageContext, location }) {
           })}
         </Breadcrumb>
         <div className="site-layout-content">
-          <CategorySection
-            allCategories={categories}
-            pageTitle={category.name}
-            subCategory={subCategories}
-            productList={productList}
-            subCategoryTitle={`Subcategory of ${category.name}`}
-            category={category}
-            total={totalProduct}
-            page={currentPage}
-            loading={loading}
-            onPageChange={onChangePage}
-            sorting={sorting}
-            onChangeSorting={onChangeSorting}
-          />
+          {
+            pageloading ? <><DefaultLoader /></> : (<CategorySection
+              allCategories={categories}
+              pageTitle={category.name}
+              subCategory={subCategories}
+              productList={productList}
+              subCategoryTitle={`Subcategory of ${category.name}`}
+              category={category}
+              total={totalProduct}
+              page={currentPage}
+              loading={loading}
+              onPageChange={onChangePage}
+              sorting={sorting}
+              onChangeSorting={onChangeSorting}
+            />)
+          }
+
         </div>
       </Content>
     </RootElement>

@@ -9,7 +9,7 @@ function ProductCard({ productDetails }) {
     <div className="Product-card">
       <div className="card-inner">
         <div className="card-figure">
-          <Link to={`/products${productDetails.custom_url.url}`}>
+          <Link to={`/products/${productDetails.id}`}>
             <div className="card-img-container">
               <img
                 src={productDetails.image || "https://www.junglescout.com/wp-content/uploads/2021/01/product-photo-water-bottle-hero.png"}
@@ -23,7 +23,7 @@ function ProductCard({ productDetails }) {
         <div className="card-body">
           <div className="card-body-inn">
             <p className="card-text brand-name">{result.name}</p>
-            <h4 className="card-title"><Link to={`/products${productDetails.custom_url.url}`}>{productDetails.name}</Link></h4>
+            <h4 className="card-title"><Link to={`/products/${productDetails.id}`}>{productDetails.name}</Link></h4>
             <div className="card-text price-block">
               <div className="price-section"><span className="price">{productDetails.price.toLocaleString("en-US", {
                 style: "currency",

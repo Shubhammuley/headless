@@ -10,7 +10,7 @@ function SideBar({ categories }) {
       const key = String(index + 1);
       const returnObj = {
         key: `sub${key}`,
-        label: <Link to={item.custom_url.url}>{item.name}</Link>,
+        label: <Link to={`/${item.id}`}>{item.name}</Link>,
       };
       const children =
         item.subCategories &&
@@ -19,7 +19,7 @@ function SideBar({ categories }) {
 
           return {
             key: `child${key} ${index}`,
-            label: <Link to={subCategory.custom_url.url}>{subCategory.name}</Link>,
+            label: <Link to={`/${subCategory.parent_id}/${subCategory.id}`}>{subCategory.name}</Link>,
           };
         });
       returnObj.children = children;

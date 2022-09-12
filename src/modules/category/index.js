@@ -55,10 +55,11 @@ function CategorySection(props) {
               <div className="sub-category-wrap">
                 <ul className="sub-category-block custom-row">
                   {subCategory.map((item) => {
+                    const url = item.parent_id === 0 ? `/${item.id}` : `/${item.parent_id}/${item}` 
                     return (
                       <div className="category-image-inner">
                         <div className="sub-category-img-block banner-hover">
-                          <Link to={item.custom_url.url}>
+                          <Link to={url}>
                             {item.url ? (
                               <img
                                 src={item.url}
@@ -77,7 +78,7 @@ function CategorySection(props) {
                           </Link>
                         </div>
                         <p className="sub-category-name">
-                          <Link to={item.custom_url.url}>{item.name}</Link>
+                          <Link to={url}>{item.name}</Link>
                         </p>
                       </div>
                     );
