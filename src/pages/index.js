@@ -59,7 +59,9 @@ const IndexPage = () => {
       console.log(e)
     }
   }
-  useEffect(fetchAllProducts, []);
+  useEffect(() => {
+    fetchAllProducts();
+  }, []);
   // const allProductList = useProductList();
   // const allNewProduct = useGetNewProduct();
   // const allPopularProduct = useGetPopularProduct();
