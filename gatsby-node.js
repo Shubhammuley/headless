@@ -49,9 +49,9 @@ async function getAllBigcommercePrduct() {
         productList.push(...result.data);
       }
       loadMore = result && result.meta.pagination.links.next;
-      if(page === 3) {
-        loadMore = false;
-      }
+      // if(page === 3) {
+      //   loadMore = false;
+      // }
     }
     return productList;
     // if(result && result.meta.pagination.link.next) {

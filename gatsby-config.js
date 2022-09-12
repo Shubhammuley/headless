@@ -2,7 +2,7 @@ const proxy = require('http-proxy-middleware');
 require("dotenv").config({
   path: `.env.${process.env.NODE_ENV || 'development'}`,
 })
-console.log(process.env)
+console.log(process.env.NODE_ENV)
 module.exports = {
   siteMetadata: {
     title: `demo-gatsby-with-contentful`,
