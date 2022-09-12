@@ -9,13 +9,15 @@ import { Link } from "gatsby";
 import RootElement from "../components/base-layout";
 import useAllBlogPost from "../hooks/use-all-blog-post";
 import useAllHomePageSlider from "../hooks/use-all-homepage-slider";
+import useGetNewProduct from '../hooks/use-all-get-new-product';
+import useGetPopularProduct from '../hooks/use-all-get-propular-product';
 import useProductList from '../hooks/use-all-product-list';
 import ProductCard from '../modules/product-card';
 import Banner1 from '../images/banner-1.jpg';
 import Banner2 from '../images/banner-2.jpg';
 import Banner3 from '../images/banner-3.jpg';
 import Banner4 from '../images/banner-4.jpg';
-import config from '../enviornment'
+// import config from '../enviornment'
 const contentStyle = {
   height: "100px",
   color: "#fff",
@@ -35,6 +37,8 @@ const IndexPage = () => {
   const allBlogPost = useAllBlogPost();
   const allHomePageSlider = useAllHomePageSlider();
   const allProductList = useProductList();
+  const allNewProduct = useGetNewProduct();
+  const allPopularProduct = useGetPopularProduct();
   // console.log(allProductList)
   const ProductSlider = {
     dots: false,
@@ -115,6 +119,32 @@ const IndexPage = () => {
         {allProductList && allProductList.length ? <>
         <Carousel className="productCarousel" {...ProductSlider}>
           {allProductList.map((item) => <ProductCard productDetails = {item}/>)}
+        </Carousel>
+          </> : null}
+        </div>
+        </div>
+        <div className="container">
+        <div class="section-title">
+          <h2 class="page-heading">Most Popular Products</h2>
+          <p class="page-sub-heading">Popular Trending Products</p>
+        </div>
+        <div className="product-scroll-list">
+        {allPopularProduct && allPopularProduct.length ? <>
+        <Carousel className="productCarousel" {...ProductSlider}>
+          {allPopularProduct.map((item) => <ProductCard productDetails = {item}/>)}
+        </Carousel>
+          </> : null}
+        </div>
+        </div>
+        <div className="container">
+        <div class="section-title">
+          <h2 class="page-heading">New Products</h2>
+          <p class="page-sub-heading">Popular Trending Products</p>
+        </div>
+        <div className="product-scroll-list">
+        {allNewProduct && allNewProduct.length ? <>
+        <Carousel className="productCarousel" {...ProductSlider}>
+          {allNewProduct.map((item) => <ProductCard productDetails = {item}/>)}
         </Carousel>
           </> : null}
         </div>
