@@ -1,12 +1,14 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Link, navigate } from 'gatsby';
+import { Carousel } from "antd";
 import {
   ReadOutlined,
   SafetyOutlined,
   PlaySquareOutlined,
   HeartOutlined,
+  DownOutlined,
 } from '@ant-design/icons';
-import { Breadcrumb, Layout, Rate, Collapse, Form, Row, Col } from "antd";
+import { Breadcrumb, Layout, Rate, Collapse, Form, Row, Col, Button  } from "antd";
 // import AddToCartButton from '../components/bigcommerce/AddToCartButton';
 // import ProductPrices from '../components/bigcommerce/ProductPrices';
 import RootElement from '../components/base-layout';
@@ -33,7 +35,90 @@ function ProductDetails({
   const [selectedImage, updateSelectedImage] = useState();
   const [selectedVideo, setSelectedVideo] = useState();
   const [relatedProducts, setRelatedProducts] = useState([]);
+  const [addToCartLoading, setAddtoCartLoadding] = useState(false);
+  const [showCartConfirmation, setCartConfirmation] = useState(false);
+  const [cartDetails, setCartDetails] = useState(null);
 
+  const ProductSlider = {
+    dots: false,
+    arrows: true,
+    infinite: false,
+    speed: 500,
+    slidesToShow: 4,
+    slidesToScroll: 4,
+    initialSlide: 0,
+    responsive: [
+      {
+        breakpoint: 1024,
+        settings: {
+          slidesToShow: 3,
+          slidesToScroll: 3,
+          infinite: true,
+          dots: true
+        }
+      },
+      {
+        breakpoint: 600,
+        settings: {
+          slidesToShow: 2,
+          slidesToScroll: 2,
+          initialSlide: 2
+        }
+      },
+      {
+        breakpoint: 480,
+        settings: {
+          slidesToShow: 1,
+          slidesToScroll: 1
+        }
+      }
+    ]
+  };
+
+  const addProductToWishList = () => {
+    const user = localStorage.getItem('loggedUserBc');
+    if(!user || user === 'null' || user === 'undefined') {
+      navigate('/login', {state: location.pathname }); 
+    } else {
+      setShowModal(true);
+    }
+  }
+
+  const closeModal = () => {
+    setShowModal(false);
+  }
+
+  const onAddToCart = async (value) => {
+    try {
+      setAddtoCartLoadding(true);
+      const data = {
+        line_items: [
+          { quantity: value.quantity || product.order_quantity_minimum || 1, product_id: pageContext.productId }
+        ]
+      }
+      const cartId = localStorage.getItem("cartId");
+      if(cartId && cartId !== 'null') {
+        const response = await addProductToCart(data, cartId);
+        setCartDetails(response.data);
+      } else {
+        const response = await createCart(data);
+        // setCartCookie('cartId',response.data.id, { path: '/', expires: new Date(new Date().setFullYear(new Date().getFullYear() + 1)).toISOString()});
+        localStorage.setItem("cartId", response.data.id);
+        console.log(response)
+        setCartDetails(response.data);
+      }
+      setAddtoCartLoadding(false);
+      setCartConfirmation(true);
+    } catch(e) {
+      setAddtoCartLoadding(false);
+      console.log(e)
+    }
+  }
+
+  const onCartConfirmationClose = () => {
+    setCartDetails(null);
+    setCartConfirmation(false);
+  }
   useEffect(()=> {
     (async () => {
       const result = await getProductList({ id: pageContext.productId })
@@ -183,7 +268,7 @@ function ProductDetails({
               </div>
             </section>
             <div className='product-details productView-description'>
-              <Collapse defaultActiveKey={['1']} expandIconPosition="end">
+              <Collapse defaultActiveKey={['1']} expandIconPosition="end" expandIcon={({ isActive }) => <DownOutlined rotate={isActive ? 180 : 0} />}>
                 <Panel header={<><ReadOutlined /> Product Description</>} key="1">
                   <p>{product.description}</p>
                 </Panel>
@@ -248,19 +333,20 @@ function ProductDetails({
             
 
             
-            <div className='related-products'>
+            <div className='related-products m-t-50'>
+            
               {
                 relatedProducts && relatedProducts.length ? (<>
-                  <div className='relative-title'>
-                    <h2>Related Products</h2>
-                    <p>Popular Trending Products</p>
+                  <div class="section-title">
+                    <h2 class="page-heading">Related Products</h2>
+                    <p class="page-sub-heading">Popular Trending Products</p>
                   </div>
                   <section className='product-view-card'>
-                    <div>
-                      {
+                  <Carousel className="productCarousel" {...ProductSlider}>
+                    {
                         relatedProducts.map((product) => (<ProductCard  productDetails={product}/>))
                       }
-                    </div>
+                    </Carousel>
                   </section>
                 </>) : null
               }

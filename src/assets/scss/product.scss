@@ -117,6 +117,68 @@
                 margin-bottom: 0;
             }
         }
+        .form-field--increments,.form-action{
+            display: inline-block;
+            margin-right: 17px;
+        }
+        .ant-input-number{
+            width: 73px;
+        }
+        .ant-input-number-input{
+            width: 50px;
+            height: 50px;
+            text-align: center;
+        }
+        
+        .ant-input-number-handler-up-inner, .ant-input-number-handler-down-inner{
+            svg{
+                width: 11px;
+                path{
+                    font-size: 13px;
+                }
+            }
+        }
+        .ant-input-number-handler-wrap{
+            opacity: 1;
+            .ant-input-number-handler, .ant-input-number-handler {
+                .ant-input-number-handler-up-inner,.ant-input-number-handler-down-inner{
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    min-width: auto;
+                    margin-right: 0;
+                    font-size: 13px;
+                }
+                
+            }
+        }
+        .form-action{
+            .ant-btn{
+                padding: 17px 33px;
+                line-height: 14px;
+                font-weight: 500;
+                text-transform: uppercase;
+                margin: 0;
+                border-radius: 0;
+                font-size: 16px;
+            }
+        }
+        .ant-form-horizontal{
+            .ant-form-item-control {
+                flex: auto;
+                min-width: 0;
+            }
+        }
+        .ant-form-item-label{
+            display: block;
+            width: 100%;
+            text-align: left;
+            label{
+                font-size: 15px;
+                color: $theme-light-black-color;
+                font-weight: 500;
+            }
+        }
     }
     .price-block {
         @include display-flex(flex);
@@ -156,4 +218,122 @@
     &:after {
         clear: both;
     }
+    .ant-collapse{
+        background-color: transparent;
+        border: 1px solid $theme-input-border-color;
+        .ant-collapse-item{
+            border-bottom: 1px solid $theme-input-border-color;
+        }
+        .ant-collapse-header-text{
+            .anticon{
+                svg{
+                    width: 20px;
+                    height: 20px;
+                    margin-right: 10px;
+                    position: absolute;
+                    left: 40px;
+                    top: 15px;
+                    fill: $theme-primary-color;
+                }
+            }
+        }
+        &.ant-collapse-icon-position-end{
+            & > .ant-collapse-item{
+                & > .ant-collapse-header{
+                    color: $theme-primary-color;
+                    font-size: 16px;
+                    padding: 15px 40px;
+                    font-weight: 400;
+                    line-height: 20px;
+                    position: relative;
+                    padding-left: 70px;
+                }
+            }
+        }
+    }
 }
+.related-products{
+    .slick-slide{
+        padding: 30px 15px 20px 15px;
+    }
+    .Product-card{
+        height: 100%;
+        &:hover{
+            box-shadow: 2px 2px 16px 0 #e6e6e6;
+            transition: all .5s;
+        }
+        .card-inner{
+            @include display-flex(flex);
+            @include flex-wrap(wrap);
+            -ms-flex-flow: column;
+            flex-flow: column;
+            @include justify-content(flex-start);
+        }
+        .card-figure{
+            display: block;
+            a{
+                display: block;
+                position: relative;
+                height: 100%;
+            }
+            .card-img-container{
+                @include display-flex(flex);
+                @include justify-content(center);
+                @include align-item(center);
+                height: 100%;
+                &:after {
+                    content: '';
+                    display: block;
+                    height: 0;
+                    width: 100%;
+                    padding-bottom: 100%;
+                }
+                img{
+                    position: absolute;
+                    top: 0;
+                    bottom: 0;
+                    left: 0;
+                    right: 0;
+                    margin: auto;
+                    border: 0;
+                    width: 100%;
+                    max-height: 100%;
+                    -o-object-fit: contain;
+                    object-fit: contain;
+                }
+            }
+        }
+        .card-body{
+            padding: 16px 22px;
+            width: 100%;
+            padding-top: 0;
+        }
+    }
+    .card-body-inn {
+        @include display-flex(flex);
+        @include flex-direction(column);
+        @include justify-content(flex-start);
+        @include align-item(center);
+    }
+    .brand-name {
+        font-size: 16px;
+        color: $theme-light-gray-color;
+        margin-bottom: 0;
+        text-align: center;
+        margin-top: 12px;
+    }
+    .card-title{
+        margin-top: 15px;
+        margin-bottom: 15px;
+        font-size: 16px;
+        font-weight: 500;
+        text-align: center;
+        line-height: 20px;
+    }
+    .price {
+        font-size: 16px;
+        color: $theme-primary-color;
+        font-weight: 500;
+    }
+}
+    

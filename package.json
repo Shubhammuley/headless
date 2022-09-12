@@ -12,7 +12,7 @@
     "start:lambda": "netlify-lambda serve src/lamda",
     "build:lambda": "netlify-lambda build src/lamda",
     "netlify:deploy": "netlify deploy -d public -p",
-    "develop": "API_URL=gatsby_url gatsby develop",
+    "develop": "gatsby develop",
     "start": "concurrently \"yarn start:lambda\" \"yarn develop\"",
     "build:app": "npm run clean && gatsby build",
     "build": "npm run clean && gatsby build",
@@ -35,10 +35,7 @@
     "react": "^18.2.0",
     "react-cookie": "^4.1.1",
     "react-dom": "^18.2.0",
-<<<<<<< HEAD
-=======
     "react-modal": "^3.15.1",
->>>>>>> bad6163e7986f146d0b22fd21c41144378ab8e5d
     "react-scripts": "^5.0.1",
     "react-svg": "^15.1.7",
     "sass": "^1.54.4"

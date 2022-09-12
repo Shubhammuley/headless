@@ -36,6 +36,21 @@
         @include align-item(center);
     }
     &-center{
+        .ant-menu{
+            background-color: transparent;
+            border: none;
+        }
+        .ant-menu-item, .ant-menu-submenu-title{
+            padding-top: 23px !important;
+            padding-bottom: 24px !important;
+            & > .ant-menu-title-content{
+                & > a{
+                    font-size: 16px;
+                    color: #f6f6f6;
+                    line-height: 1.375;
+                }
+            }
+        }
         nav{
             ul#nav{
                 margin-top: 23px;
