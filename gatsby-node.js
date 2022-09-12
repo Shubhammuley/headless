@@ -84,6 +84,8 @@ exports.createPages = async ({ graphql, actions }) => {
       component: path.resolve(`src/templates/product.js`),
       context: {
         productId: id,
+        relatedProducts: item.related_products,
+        productDetails: item,
       },
     });
   });

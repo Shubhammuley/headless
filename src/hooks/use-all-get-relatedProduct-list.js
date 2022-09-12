@@ -1,11 +1,13 @@
 import { graphql, useStaticQuery } from 'gatsby';
 
-const useProductList = () => {
+const useRelatedProductProductList = () => {
   const {
-    allBigCommerceProducts: { nodes, pageInfo }
+    allBigCommerceProducts: { nodes }
   } = useStaticQuery(graphql`
-  query BigCommerceProductsList {
-    allBigCommerceProducts(sort: {fields: name, order: ASC}) {
+  query BigCommercerRelatedProductsList ($productIds: [Int!]){
+    allBigCommerceProducts(
+        filter: {bigcommerce_id: {in: $productIds}}
+        sort: {fields: name, order: ASC}) {
       nodes {
         id
         name
@@ -154,7 +156,8 @@ const useProductList = () => {
     }
   }  
   `);
-  return { nodes, pageInfo};
+  return nodes;
 };
 
-export default useProductList;
+export default useRelatedProductProductList;
+

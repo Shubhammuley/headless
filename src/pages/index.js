@@ -36,7 +36,7 @@ const getBlogDescription = (description) => {
 const IndexPage = () => {
   const allBlogPost = useAllBlogPost();
   const allHomePageSlider = useAllHomePageSlider();
-  const allProductList = useProductList();
+  const allProductList = useProductList().nodes;
   const allNewProduct = useGetNewProduct();
   const allPopularProduct = useGetPopularProduct();
   // console.log(allProductList)
