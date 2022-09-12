@@ -279,7 +279,7 @@ select{
   }
 }
 // button Style Start
-.button{
+.button,.ant-btn{
   padding: 11px 20px;
   line-height: 20px;
   font-weight: 400;
@@ -300,12 +300,32 @@ select{
     color: $theme-white-color;
   }
 }
-.button.button--primary{
+.button.button--primary,.ant-btn.ant-btn-default{
   background: $theme-primary-color;
   border: 1px solid $theme-primary-color;
   color: $theme-white-color;
   &:hover, &:focus, &:active{
     color: $theme-primary-color;
     background: $theme-white-color;
+  }
+}
+.ant-breadcrumb{
+  text-align: left;
+  display: block;
+  margin: 15px 0;
+  a{
+    font-size: 13px;
+    color: $theme-light-gray-color;
+  }
+  li{
+    margin-bottom: 0;
+    .ant-breadcrumb-separator{
+      color: #333;
+    }
+    &:last-child{
+      a{
+        color: $theme-primary-color;
+      }
+    }
   }
 }

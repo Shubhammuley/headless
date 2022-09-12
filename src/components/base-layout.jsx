@@ -8,7 +8,7 @@ import 'antd/dist/antd.css';
 import "../assets/scss/theme.scss";
 import { getProductList } from "../service";
 import image from "../logo/logo.webp";
-/*import IconUser from '../assets/icons/user.svg';
+/*import { ReactComponent as IconUser } from '../assets/icons/user.svg';
 import { ReactComponent as IconCompare } from '../assets/icons/compare.svg';
 import { ReactComponent as IconSearch } from '../assets/icons/search.svg';
 import { ReactComponent as IconCart } from '../assets/icons/cart.svg';*/
@@ -18,9 +18,11 @@ import {
   DownOutlined,
   SearchOutlined,
   CloseOutlined,
+  UserOutlined,
 } from "@ant-design/icons";
 import { useCookies } from "react-cookie";
 // const { Sider } = Layout;
+
 
 const openNotification = (type, messageText) => {
   if (type === "error" || type === "delete") {
@@ -122,6 +124,7 @@ const RootElement = ({ children }) => {
     }),
   };
   return (
+    
     <Fragment>
       <div class="fixed-header header">
         <div class="container" >
@@ -143,7 +146,7 @@ const RootElement = ({ children }) => {
             </Col>
             <Col className="gutter-row header-center" span={12}>
               <nav>
-                <ul id="nav">
+              <Menu mode="horizontal" popupOffset={[0, 100]}>
 
                   {showSearch ? (
                     <>
@@ -209,18 +212,17 @@ const RootElement = ({ children }) => {
                     </>
                   ) : (
                     <>
-                      <Menu mode="horizontal">
+                      
                         {topNavigation.map((item, index) => {
                           const { pageUrl, title, sublink } = item;
+                          
                           if (sublink && sublink.length) {
                             return (
-                              <Menu.SubMenu key={`${title}-${index}`} title={<><Link to={`/${pageUrl}`}>
+                              <Menu.SubMenu key={`${title}-${index}`} title={<><Link to={`/${pageUrl}`} >
                                 {title}{" "}
                                 {sublink && sublink.length && <DownOutlined />}
                               </Link></>} >
-                                {sublink && sublink.length ? (
-                                  <>
-                                    {sublink.map((link, indexSub) => {
+                              {sublink.map((link, indexSub) => {
                                       return (
                                         <Menu.Item key={`${link.title}-${index}-${indexSub}`}>
                                           <Link to={`/${link.pageUrl}`}>
@@ -229,8 +231,6 @@ const RootElement = ({ children }) => {
                                         </Menu.Item>
                                       );
                                     })}
-                                  </>
-                                ) : null}
                               </Menu.SubMenu>
                             )
                           } else {
@@ -242,6 +242,7 @@ const RootElement = ({ children }) => {
                               </Menu.Item>
                             )
                           }
+                          
                           // return (
                           //   <li>
                           //     <div onMouseEnter={() => setShowSubNav(`${title}-${index}`)} onMouseLeave={() => setShowSubNav('')}>
@@ -266,28 +267,41 @@ const RootElement = ({ children }) => {
                           //   </li>
                           // );
                         })}
-                      </Menu>
-                      {userDetails ? (
-                        <>
-                          <span>Hey, {userDetails.firstName} </span>{" "}
-                          <span onClick={onLogout}>Logout</span>
-                        </>
-                      ) : (
-                        <li>
-                          {/* <Button onClick={onLogin}>Login</Button> */}
-                          <Link to={"/login"}>Login</Link>
-                        </li>
-                      )}
-                  <span onClick={() => setShowSearch(true)}>
-                    <SearchOutlined />
-                  </span>
                 </>
               )}
-            </ul>
+            </Menu>
           </nav>
           </Col>
           <Col className="gutter-row" span={6}>
-            
+          <Menu mode="horizontal">
+            <Menu.SubMenu title={<><UserOutlined /></>}>
+              {userDetails ? (
+                <>
+                <Menu.Item>
+                  <Link to=''>My Account</Link>
+                </Menu.Item>
+                  <Menu.Item><span onClick={onLogout}>Logout</span></Menu.Item>
+                </>
+              ) : (
+                <>
+                <Menu.Item>
+                  {/* <Button onClick={onLogin}>Login</Button> */}
+                  <Link to={"/login"}>Login</Link>
+                </Menu.Item>
+                <Menu.Item>
+                  <Link to=''>Register</Link>
+                </Menu.Item>
+                </>
+              )}
+              <Menu.Item>
+                  <Link to=''>Gift Certificates</Link>
+                </Menu.Item>
+                <Menu.Item>
+                  <Link to=''>Wishlist</Link>
+                </Menu.Item>
+            </Menu.SubMenu>
+            <Menu.Item><span onClick={() => setShowSearch(true)}><SearchOutlined /></span></Menu.Item>
+          </Menu>
           </Col>
         </Row>
           

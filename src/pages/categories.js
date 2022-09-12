@@ -99,7 +99,8 @@ function Categories(props) {
   return (
     <RootElement>
       <Content>
-        <Breadcrumb>
+        <div className="container">
+        <Breadcrumb separator=">">
           <Breadcrumb.Item>
             <Link to={"/"}>Home</Link>
           </Breadcrumb.Item>
@@ -125,6 +126,7 @@ function Categories(props) {
           )
         }
 
+        </div>
         </div>
       </Content>
     </RootElement>

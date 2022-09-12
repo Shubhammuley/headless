@@ -27,13 +27,13 @@ function SideBar({ categories }) {
     }),
   };
   return (
-    <div>
+    <div className="page-sidebar">
       <Menu
         mode="inline"
         defaultOpenKeys={["category"]}
         style={{
           height: "100%",
-          width: "fit-content",
+          width: "100%",
         }}
         items={[sideBar]}
       />
@@ -42,7 +42,7 @@ function SideBar({ categories }) {
         defaultOpenKeys={["price"]}
         style={{
           height: "100%",
-          width: "fit-content",
+          width: "100%",
         }}
         items={[
           {
@@ -66,7 +66,7 @@ function SideBar({ categories }) {
               {
                 label: (
                   <>
-                    <Form>
+                    <Form className="form-minMaxRow">
                       <Form.Item name="min">
                         <InputNumber placeholder="min" />
                       </Form.Item>

@@ -44,6 +44,7 @@ function CategorySection(props) {
           ) : null}
         </div>
       </div>
+      <div className="category-page">
       <SideBar categories={allCategories} />
       <div className="page-content">
         <div className="subcategory-wrap">
@@ -125,6 +126,7 @@ function CategorySection(props) {
             )}
           </div>
         </div>
+      </div>
       </div>
     </div>
   );

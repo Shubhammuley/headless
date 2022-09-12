@@ -21,7 +21,6 @@ body{
 }
 .fixed-header{
     top: 0;
-    margin-bottom: 200px;
 }
 .fixed-footer{
     bottom: 0;
