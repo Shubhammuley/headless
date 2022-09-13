@@ -3,7 +3,7 @@ import moment from "moment";
 import "antd/dist/antd.css";
 import { Carousel } from "antd";
 import { Col, Row } from 'antd';
-import { UserOutlined, CalendarOutlined } from "@ant-design/icons";
+import { UserOutlined, CalendarOutlined, LeftOutlined, RightOutlined } from "@ant-design/icons";
 import { renderRichText } from 'gatsby-source-contentful/rich-text'
 import { Link } from "gatsby";
 import RootElement from "../components/base-layout";
@@ -75,9 +75,20 @@ const IndexPage = () => {
       }
     ]
   };
+  const HeroSlider = {
+    dots: true,
+    arrows: true,
+    infinite: false,
+    speed: 500,
+    slidesToShow: 1,
+    slidesToScroll: 1,
+    initialSlide: 0,
+    prevArrow: <LeftOutlined />,
+    nextArrow: <RightOutlined />
+  };
   return (
     <RootElement>
-      <Carousel className="heroCarousel" autoplay arrows>
+      <Carousel className="heroCarousel" {...HeroSlider}>
         {allHomePageSlider &&
           allHomePageSlider.length &&
           allHomePageSlider.map((item) => (

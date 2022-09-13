@@ -304,11 +304,23 @@
         width: 100%;
       }
     }
-    .form-prefixPostfix{
+    .form-prefixPostfix,.ant-form {
+      @include display-flex(flex);
+      @include flex-wrap(wrap);
+      .ant-form-item{
+        margin-bottom: 0;
+        &:first-child{
+          -ms-flex: 1;
+          flex: 1;
+        }
+      }
       .form-input{
         border-width: 2px;
         border-right: 0px;
         box-shadow: none;
+        height: 50px;
+        font-size: 16px;
+        font-weight: 300;
         @media only screen and (max-width: 479px) {
           border-right: $theme-border-color;
           border-width: 2px;

@@ -77,7 +77,8 @@ function Categories(props) {
   return (
     <RootElement>
       <Content>
-        <Breadcrumb>
+        <div className="container">
+        <Breadcrumb separator=">">
           <Breadcrumb.Item>
             <Link to={"/"}>Home</Link>
           </Breadcrumb.Item>
@@ -99,6 +100,7 @@ function Categories(props) {
             sorting={sorting}
             onChangeSorting={onChangeSorting}
           />
+        </div>
         </div>
       </Content>
     </RootElement>

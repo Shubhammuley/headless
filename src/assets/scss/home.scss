@@ -12,6 +12,11 @@
         &.slick-next {
             right: 25px;
         }
+        svg{
+          width: 10px;
+          height: 10px;
+          fill: #2e3344;
+        }
     }
     .slick-slide{
         position: relative;

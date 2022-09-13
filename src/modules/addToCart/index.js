@@ -46,10 +46,10 @@ const RenderFormField = ({ field, index, initalValues }) => {
               /> 
             )) : null
           }
-          <Form.Item name="quantity">
+          <Form.Item name="quantity" className='form-field--increments'>
           <InputNumber min={minQuantity > 0 ? minQuantity : 1} max={maxQnt ||  10000} defaultValue={minQuantity || 1}/>
         </Form.Item>
-          <Form.Item>
+          <Form.Item className='form-action'>
             <Button htmlType='submit' disabled={outOfStock} loading={buttonLoading}>Add to cart</Button>
           </Form.Item>
         </Form>
