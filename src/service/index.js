@@ -129,6 +129,39 @@ export const getAllWishLists = async (customerId) => {
     return result;
 }
 
+export const getWishlistDetail = async (wishlistId) => {
+  const config = {
+      method: "get",
+      url: `${environmentConfig.apiUrl.getWishListDetails}?wishlistId=${wishlistId}`,
+    };
+    const result = await axios(config)
+      .then(function(response) {
+        return response.data;
+      })
+      .catch(function(error) {
+        // console.log(error.message);
+        throw Error(error.message);
+      });
+    return result;
+}
+
+
+export const removeWishlistItem = async (wishlistId, itemId) => {
+  const config = {
+      method: "delete",
+      url: `${environmentConfig.apiUrl.removeWishListItem}?wishlistId=${wishlistId}&itemId=${itemId}`,
+    };
+    const result = await axios(config)
+      .then(function(response) {
+        return response.data;
+      })
+      .catch(function(error) {
+        // console.log(error.message);
+        throw Error(error.message);
+      });
+    return result;
+}
+
 export const addProductToWishList = async (data) => {
   const config = {
       method: "post",
@@ -157,8 +190,7 @@ export const addProductToCart = async (data, cartId) => {
         return response.data;
       })
       .catch(function(error) {
-        // console.log(error.message);
-        throw Error(error.message);
+        throw error;
       });
     return result;
 }
@@ -168,6 +200,60 @@ export const createCart = async (data) => {
       method: "post",
       url: `${environmentConfig.apiUrl.createCart}`,
       data
+    };
+    const result = await axios(config)
+      .then(function(response) {
+        return response.data;
+      })
+      .catch(function(error) {
+        // console.log(error.message);
+        throw Error(error.message);
+      });
+    return result;
+}
+
+
+
+export const updateCart = async (data, cartId, itemId) => {
+  const config = {
+      method: "post",
+      url: `${environmentConfig.apiUrl.updateCartItem}?cartId=${cartId}&itemId=${itemId}`,
+      data
+    };
+    const result = await axios(config)
+      .then(function(response) {
+        return response.data;
+      })
+      .catch(function(error) {
+        // console.log(error.message);
+        throw Error(error.message);
+      });
+    return result;
+}
+
+
+export const getCart = async (cartId) => {
+  const config = {
+      method: "get",
+      url: `${environmentConfig.apiUrl.getCart}?cartId=${cartId}`,
+    };
+    const result = await axios(config)
+      .then(function(response) {
+        return response.data;
+      })
+      .catch(function(error) {
+        throw error;
+      });
+    return result;
+}
+
+
+
+
+export const deleteCartItem = async (cartId, itemId) => {
+  const config = {
+      method: "delete",
+      url: `${environmentConfig.apiUrl.removeCartItem}?cartId=${cartId}&itemId=${itemId}`,
     };
     const result = await axios(config)
       .then(function(response) {

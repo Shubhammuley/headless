@@ -14,15 +14,15 @@ export default async function handler(req, res) {
     };
     const cookies = parseCookie(req.headers.cookie || "");
 
-    if (!cookies || !cookies.cartId) {
-        res.status(500).json({ message: "Cart not found " });
-    }
+    // if (!cookies || !cookies.cartId) {
+    //     res.status(500).json({ message: "Cart not found " });
+    // }
 
     const config = {
         method: "PUT",
         withCredentials: false,
         mode: "no-cors",
-        url: `${storeUrl}/v3/carts/${cookies.cartId}/items/${req.query.itemId}`,
+        url: `${storeUrl}/v3/carts/${req.query.cartId}/items/${req.query.itemId}`,
         headers: {
             "sec-ch-ua":
                 '"Chromium";v="104", " Not A;Brand";v="99", "Google Chrome";v="104"',
@@ -31,6 +31,7 @@ export default async function handler(req, res) {
             "X-Auth-Token": apiToken,
             "Content-Type": "application/json",
             "sec-ch-ua-mobile": "?0",
+            'Accept': 'application/json',
             "Access-Control-Allow-Methods": "GET, PUT, POST, DELETE, OPTIONS",
             "User-Agent":
                 "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36",
@@ -39,6 +40,8 @@ export default async function handler(req, res) {
         data: data,
     };
 
+    console.log(data);
+    console.log(config);
     const result = await axios(config)
         .then(function (response) {
             res.header(response.headers);

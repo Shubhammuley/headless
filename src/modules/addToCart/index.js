@@ -29,9 +29,9 @@ const RenderFormField = ({ field, index, initalValues }) => {
         inventory,
         buttonLoading,
     } = props;
-    console.log(inventory)
+    // console.log(inventory)
     const maxQnt = maxQuantity > inventory ? maxQuantity : inventory;
-    console.log(maxQnt)
+    // console.log(maxQnt)
     return (
         <Form
             form={form}

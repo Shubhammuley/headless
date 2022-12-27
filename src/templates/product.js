@@ -19,6 +19,8 @@ import DefaultLoader from '../components/PageLoading/DefaultLoader';
 import WishListModal from '../modules/wishlist-modal';
 import CartConfirmationModal from '../modules/addToCart/confirmation-modal';
 import { useCookies } from "react-cookie";
+import  notification from '../components/Notification';
+
 const { Content } = Layout;
 const { Panel } = Collapse;
 
@@ -111,7 +113,8 @@ function ProductDetails({
       setCartConfirmation(true);
     } catch(e) {
       setAddtoCartLoadding(false);
-      console.log(e)
+      // console.log(e.response.data.message.title)
+      notification('error', e?.response?.data?.message?.title)
     }
   }
 
@@ -261,7 +264,6 @@ function ProductDetails({
             </section>
             <section className='product-details productView-details add-to-cart'>
               <div>
-                {console.log(product) }
                 {product && !product.inventory_level ? <span>Out of stock</span> : null }
                 <AddToCartForm buttonLoading={addToCartLoading} form={form} fields={field} onSubmit={onAddToCart} outOfStock={product && !product.inventory_level} minQuantity={product.order_quantity_minimum} maxQuantity={product.order_quantity_maximum} inventory={product.inventory_level} />
                 <Button onClick={addProductToWishList}><HeartOutlined /></Button>

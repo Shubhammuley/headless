@@ -1,6 +1,6 @@
-import { Button } from 'antd';
+import { Button, Modal } from 'antd';
 import React from 'react';
-import Modal from 'react-modal';
+// import Modal from 'react-modal';
 
 function CartConfirmationModal(props) {
     const {
@@ -19,28 +19,29 @@ function CartConfirmationModal(props) {
     return (
         <div>
             <Modal
-                isOpen={isModalOpen}
-                onRequestClose={onClose}
-                contentLabel="cart confirmation"
+                open={isModalOpen}
+                onCancel={onClose}
+                title={`Ok, ${totalItemInCart} items were added to your cart. What's next?`}
                 //   style={customStyles}
                 className="Modal"
                 overlayClassName="Overlay"
+                footer={[]}
             >
-                <div className="modal-header">
+                {/* <div className="modal-header">
                     <h2 className="modal-header-title">Ok, {totalItemInCart} items were added to your cart. What's next?</h2>
                     <span onClick={onClose}>×</span>
-                </div>
+                </div> */}
                 <div>
                     <div>
                         <section>
                             <div>
                                 <div>
-                                    <img src={productDetails.image_url} alt={productDetails.name} />
+                                    <img src={productDetails?.image_url} alt={productDetails?.name} />
                                 </div>
                                 <div>
-                                    <h4>{productDetails.name}</h4>
+                                    <h4>{productDetails?.name}</h4>
                                     <div>Brand (have to add later)</div>
-                                    <div>{productDetails.quantity} x {productDetails.original_price.toLocaleString("en-US", {
+                                    <div>{productDetails?.quantity} x {productDetails?.original_price.toLocaleString("en-US", {
                                         style: "currency",
                                         currency: "USD",
                                         minimumFractionDigits: 0,

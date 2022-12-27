@@ -7,27 +7,26 @@ export default async function handler(req, res) {
     const parseCookie = (str) => {
         const obj = {};
         str.split(";").map((item) => {
-            obj[item.split("=")[0]] = item.split("=")[1];
+          obj[item.split("=")[0]] = item.split("=")[1];
         });
         return obj;
-    };
-    // const cookies = parseCookie(req.headers.cookie || "");
+      };
+      const cookies = parseCookie(req.headers.cookie || "");
 
-    // if (!cookies || !cookies.cartId) {
-    //     res.status(500).json({ message: "Cart not found " });
-    // }
-
+    //   if(!cookies || !cookies.cartId) {
+        //   res.status(500).json({ message:  "Cart not found "});
+    //   }
     const config = {
-        method: "DELETE",
+        method: "get",
         withCredentials: false,
         mode: "no-cors",
-        url: `${storeUrl}/v3/carts/${req.query.cartId}/items/${req.query.itemId}`,
+        url: `${storeUrl}/v3/carts/${req.query.cartId}`,
         headers: {
             "sec-ch-ua":
                 '"Chromium";v="104", " Not A;Brand";v="99", "Google Chrome";v="104"',
             Referer: "http://localhost:8000/",
-            "Access-Control-Allow-Origin": "*",
             "X-Auth-Token": apiToken,
+            "Access-Control-Allow-Origin": "*",
             "Content-Type": "application/json",
             "sec-ch-ua-mobile": "?0",
             "Access-Control-Allow-Methods": "GET, PUT, POST, DELETE, OPTIONS",
@@ -37,14 +36,14 @@ export default async function handler(req, res) {
         },
     };
 
-    console.log(config)
     const result = await axios(config)
         .then(function (response) {
-            // console.log(response.data)
-            return { data: response.data };
+            res.header(response.headers);
+            console.log(response.data)
+            return { ...response.data };
         })
         .catch(function (error) {
-            res.status(500).json({ message: error.response.data });
+          res.status(500).json({ message:  error.response.data});
         });
     // res.cookie
     res.send(result);

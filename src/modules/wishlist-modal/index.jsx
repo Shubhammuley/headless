@@ -1,8 +1,8 @@
-import { Form, Input, Checkbox, Button } from 'antd';
+import { Form, Input, Checkbox, Button, Modal } from 'antd';
 import { navigate } from 'gatsby';
 import React, { useState } from 'react';
 import { useEffect } from 'react';
-import Modal from 'react-modal';
+// import Modal from 'react-modal';
 import { createWishList, getAllWishLists, addProductToWishList } from '../../service';
 import notfication from '../../components/Notification';
 
@@ -28,16 +28,16 @@ function WishListModal({
     const [buttonLoading, setButtonLoading] = useState(false);
 
     const fetchWishList = async () => {
-      try {
-        setLoding(true);
-        const user = JSON.parse(localStorage.getItem("loggedUserBc"));
-        const response = await getAllWishLists(user.entityId);
-        setWishList(response.data || []);
-        setLoding(false);
-        console.log(response)
-      } catch(e) {
-        console.log(e)
-      }
+        try {
+            setLoding(true);
+            const user = JSON.parse(localStorage.getItem("loggedUserBc"));
+            const response = await getAllWishLists(user.entityId);
+            setWishList(response.data || []);
+            setLoding(false);
+            console.log(response)
+        } catch (e) {
+            console.log(e)
+        }
     }
 
     const addToWishList = async (id) => {
@@ -49,19 +49,19 @@ function WishListModal({
             await addProductToWishList(data);
             notfication("success", "Added to wishlist!")
             onClose();
-        }catch (e) {
+        } catch (e) {
             console.log(e);
         }
     }
     useEffect(() => {
         const user = localStorage.getItem('loggedUserBc');
         console.log(user)
-            if (user && user !== 'null' && user !== 'undefined') {
-                fetchWishList();
-            } else {
-                navigate('/login')
-            }
-    },[]);
+        if (user && user !== 'null' && user !== 'undefined') {
+            fetchWishList();
+        } else {
+            navigate('/login')
+        }
+    }, []);
 
 
     const createNewWishList = async (value) => {
@@ -92,29 +92,32 @@ function WishListModal({
     return (
         <div>
             <Modal
-                isOpen={isModalOpen}
-                onRequestClose={onClose}
-                contentLabel="Add to Wishlist"
-                //   style={customStyles}
+                open={isModalOpen}
+                onCancel={onClose}
+                title={(
+                    <>
+                     {
+                        isCreateWishlist ? (
+                            <>
+                            <h3>New Wish List</h3>
+                            <p>Fill in the form below to create a new Wish List. Click the "Create Wish List" button when you're done.</p>
+                                </>
+                        ) : "Add to Wishlist"
+                     }
+                    </>
+                )}
                 className="Modal"
                 overlayClassName="Overlay"
+                footer={[]}
             >
-                {/* <h1>{!isCreateWishlist ? "Add to Wishlist" : "New Wish List"}</h1>
-          {
-            isCreateWishlist ? 
-            (<>
-               <p>Fill in the form below to create a new Wish List. Click the "Create Wish List" button when you're done.</p>
-               
-            </>) : null
-          } */}
                 {
                     isCreateWishlist ? (
                         <>
-                            <header>
+                            {/* <header>
                                 <h1>New Wish List</h1>
                                 <p>Fill in the form below to create a new Wish List. Click the "Create Wish List" button when you're done.</p>
                                 <span onClick={onClose}>×</span>
-                            </header>
+                            </header> */}
                             <Form onFinish={createNewWishList}>
                                 <Form.Item
                                     label="Wish List Name"
@@ -144,26 +147,26 @@ function WishListModal({
                     ) : (
                         <>
                             <div className="modal-header">
-                                <h2 class="modal-header-title">Add to Wishlist</h2>
-                                <span onClick={onClose}>×</span>
+                                {/* <h2 class="modal-header-title">Add to Wishlist</h2> */}
+                                {/* <span onClick={onClose}>×</span> */}
                             </div>
                             <div>
                                 <div>
                                     {wishList && wishList.length ? (
                                         <>
-                                          {
-                                            wishList.map((item) => {
-                                                return <Button onClick={()=> addToWishList(item.id)} key={item.id}>{item.name}</Button>
-                                            })
-                                          }
+                                            {
+                                                wishList.map((item) => {
+                                                    return <Button onClick={() => addToWishList(item.id)} key={item.id}>{item.name}</Button>
+                                                })
+                                            }
                                         </>
                                     ) : (
                                         <>
-                                          <p>Please create a new Wishlist</p>
+                                            <p>Please create a new Wishlist</p>
                                         </>
                                     )}
                                     <div>
-                                    <Button onClick={() => setIsCreateWishList(true)}>CREATE NEW WISH LIST</Button>
+                                        <Button onClick={() => setIsCreateWishList(true)}>CREATE NEW WISH LIST</Button>
                                     </div>
                                 </div>
                             </div>

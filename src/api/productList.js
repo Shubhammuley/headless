@@ -19,7 +19,12 @@ export default async function handler(req, res) {
       url = url + `&page=${req.query.page}`;
     }
     if (req.query.idIn) {
-      url = url + `&id:in=${encodeURIComponent(req.query.idIn)}`
+      console.log(JSON.parse(req.query.idIn).length)
+      if(JSON.parse(req.query.idIn).length > 1){
+        url = url + `&id:in=${encodeURIComponent(req.query.idIn)}`
+      } else {
+        url = url + `&id:in=${JSON.parse(req.query.idIn)[0]}`
+      }
     }else if (req.query.id) {
       url = url + `&id=${req.query.id}`
     }

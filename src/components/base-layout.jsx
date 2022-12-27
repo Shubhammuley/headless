@@ -1,12 +1,12 @@
 import React, { Fragment, useEffect, useState } from "react";
-import { Link, navigate } from "gatsby";
+import { Link } from "gatsby";
 import useTopNavigation from "../hooks/use-top-navigation";
 import useBottomNavigation from "../hooks/use-bottom-navigation";
-import { Menu, message, Input, Col, Row,Form,Button } from "antd";
+import { Menu, message, Input, Col, Row, Form, Button, Badge } from "antd";
 import "./base-component.css";
 import 'antd/dist/antd.css';
 import "../assets/scss/theme.scss";
-import { getProductList } from "../service";
+import { getProductList, getCategories, getCart } from "../service";
 import image from "../logo/logo.webp";
 /*import { ReactComponent as IconUser } from '../assets/icons/user.svg';
 import { ReactComponent as IconCompare } from '../assets/icons/compare.svg';
@@ -14,7 +14,7 @@ import { ReactComponent as IconSearch } from '../assets/icons/search.svg';
 import { ReactComponent as IconCart } from '../assets/icons/cart.svg';*/
 import {
   MenuFoldOutlined,
-  MenuUnfoldOutlined,
+  ShoppingCartOutlined,
   DownOutlined,
   SearchOutlined,
   CloseOutlined,
@@ -42,8 +42,47 @@ const RootElement = ({ children }) => {
   const [userDetails, setUserDetails] = useState(null);
   const [productList, setProductList] = useState([]);
   const [noProductFoundError, SetNotProductFoundError] = useState(false);
+  const [categories, setCategories] = useState([]);
+  const [cartItem, setCartItem] = useState({});
+  // const 
+  const [showCartItem, setShowCartItem] = useState(false);
   // const [showSubNav, setShowSubNav] = useState('');
+  
+  const fetchCart = async (cartId) => {
+    try {
+     const result = await getCart(cartId);
+     if(result && result.data && result.data.line_items && result.data.line_items.physical_items) {
+       setCartItem(result.data);
+     }
+    } catch (e) {
+      console.log(e)
+    }
+  }
+  const fetchCategories = async () => {
+    try {
+      const category = [];
+      const result = await getCategories();
+      result.data.map((item) => {
+        if (item && item.parent_id === 0) {
+          const subCategories = result.data.filter(
+            (subCategory) => subCategory.parent_id === item.id
+          );
+          category.push({ ...item, subCategories });
+        }
+      });
+      setCategories(category);
+    } catch (e) {
+      console.log(e)
+    }
+  }
 
+  useEffect(() => {
+    fetchCategories();
+    const cartId = localStorage.getItem("cartId");
+      if(cartId && cartId !== 'null') { 
+        fetchCart(cartId);
+      }
+  }, []);
   useEffect(() => {
     if (typeof window !== "undefined") {
       localStorage.setItem("myCat", "Tom");
@@ -77,7 +116,6 @@ const RootElement = ({ children }) => {
   const onSearch = (e) => {
     onCloseSearch();
     window.location.replace(`/search/?search_query=${encodeURIComponent(e.target.value)}`)
-    console.log(e.target.value);
   };
 
   const searchOnChange = async (e) => {
@@ -124,7 +162,7 @@ const RootElement = ({ children }) => {
     }),
   };
   return (
-    
+
     <Fragment>
       <div class="fixed-header header">
         <div class="container" >
@@ -146,7 +184,7 @@ const RootElement = ({ children }) => {
             </Col>
             <Col className="gutter-row header-center" span={12}>
               <nav>
-              <Menu mode="horizontal" popupOffset={[0, 100]}>
+                <Menu mode="horizontal" popupOffset={[0, 100]}>
 
                   {showSearch ? (
                     <>
@@ -212,127 +250,167 @@ const RootElement = ({ children }) => {
                     </>
                   ) : (
                     <>
-                      
-                        {topNavigation.map((item, index) => {
-                          const { pageUrl, title, sublink } = item;
-                          
-                          if (sublink && sublink.length) {
-                            return (
-                              <Menu.SubMenu key={`${title}-${index}`} title={<><Link to={`/${pageUrl}`} >
-                                {title}{" "}
-                                {sublink && sublink.length && <DownOutlined />}
-                              </Link></>} >
+
+                      {topNavigation.map((item, index) => {
+                        const { pageUrl, title, sublink } = item;
+
+                        if (sublink && sublink.length) {
+                          return (
+                            <Menu.SubMenu key={`${title}-${index}`} title={<><Link to={`/${pageUrl}`} >
+                              {title}{" "}
+                              {sublink && sublink.length && <DownOutlined />}
+                            </Link></>} >
                               {sublink.map((link, indexSub) => {
-                                      return (
-                                        <Menu.Item key={`${link.title}-${index}-${indexSub}`}>
-                                          <Link to={`/${link.pageUrl}`}>
-                                            {link.title}
-                                          </Link>
-                                        </Menu.Item>
-                                      );
-                                    })}
-                              </Menu.SubMenu>
-                            )
-                          } else {
-                            return (
-                              <Menu.Item key={`${title}-${index}`}>
-                                <Link to={`/${pageUrl}`}>
-                                  {title}{" "}
-                                </Link>
-                              </Menu.Item>
-                            )
-                          }
-                          
-                          // return (
-                          //   <li>
-                          //     <div onMouseEnter={() => setShowSubNav(`${title}-${index}`)} onMouseLeave={() => setShowSubNav('')}>
-                          //       <Link to={`/${pageUrl}`}>
-                          //         {title}{" "}
-                          //         {sublink && sublink.length && <DownOutlined />}
-                          //       </Link>
-                          //       {sublink && sublink.length && showSubNav === `${title}-${index}` ? (
-                          //         <ul>
-                          //           {sublink.map((link) => {
-                          //             return (
-                          //               <li>
-                          //                 <Link to={`/${link.pageUrl}`}>
-                          //                   {link.title}
-                          //                 </Link>
-                          //               </li>
-                          //             );
-                          //           })}
-                          //         </ul>
-                          //       ) : null}
-                          //     </div>
-                          //   </li>
-                          // );
-                        })}
-                </>
-              )}
-            </Menu>
-          </nav>
-          </Col>
-          <Col className="gutter-row" span={6}>
-          <Menu mode="horizontal">
-            <Menu.SubMenu title={<><UserOutlined /></>}>
-              {userDetails ? (
-                <>
-                <Menu.Item>
-                  <Link to=''>My Account</Link>
-                </Menu.Item>
-                  <Menu.Item><span onClick={onLogout}>Logout</span></Menu.Item>
-                </>
-              ) : (
-                <>
-                <Menu.Item>
-                  {/* <Button onClick={onLogin}>Login</Button> */}
-                  <Link to={"/login"}>Login</Link>
-                </Menu.Item>
-                <Menu.Item>
-                  <Link to=''>Register</Link>
-                </Menu.Item>
-                </>
-              )}
-              <Menu.Item>
-                  <Link to=''>Gift Certificates</Link>
-                </Menu.Item>
-                <Menu.Item>
-                  <Link to=''>Wishlist</Link>
-                </Menu.Item>
-            </Menu.SubMenu>
-            <Menu.Item><span onClick={() => setShowSearch(true)}><SearchOutlined /></span></Menu.Item>
-          </Menu>
-          </Col>
-        </Row>
-          
+                                return (
+                                  <Menu.Item key={`${link.title}-${index}-${indexSub}`}>
+                                    <Link to={`/${link.pageUrl}`}>
+                                      {link.title}
+                                    </Link>
+                                  </Menu.Item>
+                                );
+                              })}
+                            </Menu.SubMenu>
+                          )
+                        } else {
+                          return (
+                            <Menu.Item key={`${title}-${index}`}>
+                              <Link to={`/${pageUrl}`}>
+                                {title}{" "}
+                              </Link>
+                            </Menu.Item>
+                          )
+                        }
+
+                        // return (
+                        //   <li>
+                        //     <div onMouseEnter={() => setShowSubNav(`${title}-${index}`)} onMouseLeave={() => setShowSubNav('')}>
+                        //       <Link to={`/${pageUrl}`}>
+                        //         {title}{" "}
+                        //         {sublink && sublink.length && <DownOutlined />}
+                        //       </Link>
+                        //       {sublink && sublink.length && showSubNav === `${title}-${index}` ? (
+                        //         <ul>
+                        //           {sublink.map((link) => {
+                        //             return (
+                        //               <li>
+                        //                 <Link to={`/${link.pageUrl}`}>
+                        //                   {link.title}
+                        //                 </Link>
+                        //               </li>
+                        //             );
+                        //           })}
+                        //         </ul>
+                        //       ) : null}
+                        //     </div>
+                        //   </li>
+                        // );
+                      })}
+                    </>
+                  )}
+                </Menu>
+              </nav>
+            </Col>
+            <Col className="gutter-row" span={6}>
+              <Menu mode="horizontal">
+                <Menu.SubMenu title={<><UserOutlined /></>}>
+                  {userDetails ? (
+                    <>
+                      <Menu.Item>
+                        <Link to=''>My Account</Link>
+                      </Menu.Item>
+                      <Menu.Item><span onClick={onLogout}>Logout</span></Menu.Item>
+                    </>
+                  ) : (
+                    <>
+                      <Menu.Item>
+                        {/* <Button onClick={onLogin}>Login</Button> */}
+                        <Link to={"/login"}>Login</Link>
+                      </Menu.Item>
+                      <Menu.Item>
+                        <Link to=''>Register</Link>
+                      </Menu.Item>
+                    </>
+                  )}
+                  <Menu.Item>
+                    <Link to=''>Gift Certificates</Link>
+                  </Menu.Item>
+                  <Menu.Item>
+                    <Link to='/wishlist'>Wishlist</Link>
+                  </Menu.Item>
+                </Menu.SubMenu>
+                <Menu.Item><span onClick={() => setShowSearch(true)}><SearchOutlined /></span></Menu.Item>
+
+                <Menu.Item><span onClick={() => setShowCartItem(!showCartItem)}><Badge count={cartItem && cartItem.line_items && cartItem.line_items.physical_items.length}><ShoppingCartOutlined /></Badge></span></Menu.Item>
+                {
+                  showCartItem ? (
+                    <div>
+                       {
+                        cartItem && cartItem.line_items && cartItem.line_items.physical_items.length ? (<>
+                          <div>
+                            <ul>
+                              {cartItem.line_items.physical_items.map((item)=> {
+                                return (
+                                  <li>
+                                    <div><img src={item.image_url} /></div>
+                                    <div>
+                                      <span>{item.name}</span>
+                                      <span>{item.sale_price.toLocaleString("en-US", {
+                                        style: "currency",
+                                        currency: "USD",
+                                        minimumFractionDigits: 0,
+                                    })}</span>
+                                    </div>
+                                  </li>
+                                )
+                              })}
+                            </ul>
+                            <div>
+                              <span>Total: {cartItem.cart_amount}</span>
+                            </div>
+                            <div>
+                              <Link><Button>Checkout Now</Button></Link>
+                              <Link to='/cart'><Button>View cart</Button></Link>
+                            </div>
+                          </div>
+                        </>) : (<>
+                        <div>Your cart is empty</div>                           
+                        </>)
+                       }
+                    </div>
+                  ) : null
+                }
+              </Menu>
+            </Col>
+          </Row>
+
         </div>
       </div>
-      
-          <div className={!collapsed ? "nav-bar collapsed" : "nav-bar"}>
-            <Menu
-              mode="inline"
-              style={{
-                height: "100%",
-              }}
-              items={[sideBar]}
-            />
-          </div>
-          <div onClick={()=> setCollapsed(true)}>
-          {children}
-          </div>
-          <footer className="footer">
-              <div className="footer-info-inn">
-                <div className="container">
-                  <Row className="footer-info" gutter={20}>
-                    <Col span={4} className='footer-info-col footer-info-col--small footer-store-info'>
-                      <p><span>Lorem ipsum dolor sit amet,{'\n'}consectetur, LA 62303</span></p>
-                      <p><span><a href="tel:636-377-2140">636-377-2140</a></span></p>
-                    </Col>
-                    <Col span={4} className='footer-info-col footer-info-col--small'>
-                      <div className="footer-info--col-inn">
-                      <h5 class="footer-info-heading footer-toggle-title">Quick Links</h5>
-                      <div className="footer-toggle-content">
-                      <Menu className="footer-info-list">
+
+      <div className={!collapsed ? "nav-bar collapsed" : "nav-bar"}>
+        <Menu
+          mode="inline"
+          style={{
+            height: "100%",
+          }}
+          items={[sideBar]}
+        />
+      </div>
+      <div onClick={() => setCollapsed(true)}>
+        {children}
+      </div>
+      <footer className="footer">
+        <div className="footer-info-inn">
+          <div className="container">
+            <Row className="footer-info" gutter={20}>
+              <Col span={4} className='footer-info-col footer-info-col--small footer-store-info'>
+                <p><span>Lorem ipsum dolor sit amet,{'\n'}consectetur, LA 62303</span></p>
+                <p><span><a href="tel:636-377-2140">636-377-2140</a></span></p>
+              </Col>
+              <Col span={4} className='footer-info-col footer-info-col--small'>
+                <div className="footer-info--col-inn">
+                  <h5 class="footer-info-heading footer-toggle-title">Quick Links</h5>
+                  <div className="footer-toggle-content">
+                    <Menu className="footer-info-list">
                       {topNavigation.map((item, index) => {
                         const { pageUrl, title } = item;
                         return (
@@ -341,68 +419,71 @@ const RootElement = ({ children }) => {
                           </Menu.Item>
                         );
                       })}
-                      </Menu>
-                      </div>
-                      </div>
-                      
-                    </Col>
-                    <Col span={4} className='footer-info-col footer-info-col--small'>
-                      <div className="footer-info--col-inn">
-                      <h5 class="footer-info-heading footer-toggle-title">Popular Brands</h5>
-                      <div className="footer-toggle-content">
-                      <Menu className="footer-info-list">
-                        <Menu.Item><Link to=''>OFS</Link></Menu.Item>
-                        <Menu.Item><Link to=''>Common Good</Link></Menu.Item>
-                        <Menu.Item className="view-all"><Link to=''>View All</Link></Menu.Item>
-                      </Menu>
-                      </div>
-                      </div>
-                    </Col>
-                    <Col span={4} className='footer-info-col footer-info-col--small'>
-                      <div className="footer-info--col-inn">
-                      <h5 className="footer-info-heading footer-toggle-title">Categories</h5>
-                      <div className="footer-toggle-content">
-                      <Menu className="footer-info-list">
-                        <Menu.Item><Link to=''>Women</Link></Menu.Item>
-                        <Menu.Item><Link to=''>Men</Link></Menu.Item>
-                        <Menu.Item><Link to=''>Kids</Link></Menu.Item>
-                        <Menu.Item><Link to=''>Accessories</Link></Menu.Item>
-                        <Menu.Item className="view-all"><Link to=''>View All</Link></Menu.Item>
-                      </Menu>
-                      </div>
-                      </div>
-                    </Col>
-                  </Row>
-                  <Row className="footer-mid-section" gutter={20}>
-                  <Col span={8} className='footer-info-col footer-info-col--social footer-info-col--left'><h5 class="footer-info-heading">Connect With Us</h5></Col>
-                  <Col span={16} className='footer-info-col footer-info-newsletter'>
-                    <div className="footer-info-newsletter-inn">
-                    <h5 className="footer-info-heading">Sign Up for our Newsletter</h5>
-                    <Form wrapperCol={{ span: 32 }} initialValues={{ remember: true }}>
+                    </Menu>
+                  </div>
+                </div>
+
+              </Col>
+              <Col span={4} className='footer-info-col footer-info-col--small'>
+                <div className="footer-info--col-inn">
+                  <h5 class="footer-info-heading footer-toggle-title">Popular Brands</h5>
+                  <div className="footer-toggle-content">
+                    <Menu className="footer-info-list">
+                      <Menu.Item><Link to=''>OFS</Link></Menu.Item>
+                      <Menu.Item><Link to=''>Common Good</Link></Menu.Item>
+                      <Menu.Item className="view-all"><Link to=''>View All</Link></Menu.Item>
+                    </Menu>
+                  </div>
+                </div>
+              </Col>
+              <Col span={4} className='footer-info-col footer-info-col--small'>
+                <div className="footer-info--col-inn">
+                  <h5 className="footer-info-heading footer-toggle-title">Categories</h5>
+                  <div className="footer-toggle-content">
+                    <Menu className="footer-info-list">
+                      {
+                        categories.slice(0, 4).map((item) => {
+                          return (
+                            <Menu.Item><Link to={`/${item.id}`}>{item.name}</Link></Menu.Item>
+                          )
+                        })
+                      }
+                      <Menu.Item className="view-all"><Link to='/categories'>View All</Link></Menu.Item>
+                    </Menu>
+                  </div>
+                </div>
+              </Col>
+            </Row>
+            <Row className="footer-mid-section" gutter={20}>
+              <Col span={8} className='footer-info-col footer-info-col--social footer-info-col--left'><h5 class="footer-info-heading">Connect With Us</h5></Col>
+              <Col span={16} className='footer-info-col footer-info-newsletter'>
+                <div className="footer-info-newsletter-inn">
+                  <h5 className="footer-info-heading">Sign Up for our Newsletter</h5>
+                  <Form wrapperCol={{ span: 32 }} initialValues={{ remember: true }}>
                     <Form.Item name="nl_email" rules={[{ required: true, message: 'Please input your email!' }]}>
                       <Input className="form-input" placeholder="Join our Newsletter..." />
                     </Form.Item>
                     <Form.Item>
                       <Button type="primary" className='button button--primary'>Submit</Button>
                     </Form.Item>
-                    </Form>
-                    </div>
-                  </Col>
-                  <Col span={8} className='footer-info-col footer-info-col--payment'></Col>
-                  </Row>
+                  </Form>
                 </div>
+              </Col>
+              <Col span={8} className='footer-info-col footer-info-col--payment'></Col>
+            </Row>
+          </div>
+        </div>
+        <div className="footer-bar">
+          <div className="container">
+            <div className="footer-bar-inn">
+              <div className="footer-copyright"><p className="powered-by"><span>© 2022</span><span className="theme-color">LifeStyle Default</span> <span className="line">|</span><span className="bigcommerce">Powered by <Link href='https://www.bigcommerce.com/?utm_source=lifestyle&amp;utm_medium=poweredbyBC' target="_blank">BigCommerce</Link><span className="line">|</span></span><Link className="site-map" href="/sitemap.php">Sitemap</Link></p></div>
+              <div className="footer-copyright">
+                <p class="powered-by">BigCommerce Theme by <Link class="theme-red-color" href="https://www.1center.co/" rel="nofollow" target="_blank">1Center</Link></p>
               </div>
-              <div className="footer-bar">
-                <div className="container">
-                  <div className="footer-bar-inn">
-                    <div className="footer-copyright"><p className="powered-by"><span>© 2022</span><span className="theme-color">LifeStyle Default</span> <span className="line">|</span><span className="bigcommerce">Powered by <Link href='https://www.bigcommerce.com/?utm_source=lifestyle&amp;utm_medium=poweredbyBC' target="_blank">BigCommerce</Link><span className="line">|</span></span><Link className="site-map" href="/sitemap.php">Sitemap</Link></p></div>
-                    <div className="footer-copyright">
-                    <p class="powered-by">BigCommerce Theme by <Link class="theme-red-color" href="https://www.1center.co/" rel="nofollow" target="_blank">1Center</Link></p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-          </footer>
+            </div>
+          </div>
+        </div>
+      </footer>
     </Fragment>
   );
 };

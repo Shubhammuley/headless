@@ -8,12 +8,15 @@
     "getState" : "/api/states",
     "createWishList": "/api/createWishList",
     "getAllWishLists" : "/api/getAllWishList",
+    "getWishListDetails" : "/api/getWishListDetails",
+    "removeWishListItem" : "/api/removeWishListItem",
     "addWishListItem": "/api/addWishListItem",
     "addToCart": "/api/addToCart",
     "createCart": "/api/createCart",
     "removeCartItem": "/api/removeCartItem",
     "updateCartItem": "/api/updateCartItem",
-    "getCategories": "/api/getCategories"
+    "getCategories": "/api/getCategories",
+    "getCart": "/api/getCart"
   },
   "netlify_lambda": {
     "getCountries": "/.netlify/functions/countries",
@@ -29,6 +32,7 @@
     "createCart": "/.netlify/functions/createCart",
     "removeCartItem": "/.netlify/functions/removeCartItem",
     "updateCartItem": "/.netlify/functions/updateCartItem",
-    "getCategories": "/.netlify/functions/getCategories"
+    "getCategories": "/.netlify/functions/getCategories",
+    "getCart": "/.netlify/functions/getCart"
   }
 }
